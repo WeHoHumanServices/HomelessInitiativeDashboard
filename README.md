@@ -73,3 +73,7 @@ For GitHub Pages: **Settings → Pages → Deploy from a branch → main / root*
 ## What intentionally remains static
 
 Explanatory copy, methodology language, labels, definitions, and most narrative notes remain in HTML/JS. That is intentional: they are presentation/content rather than record-level data. A later pass can move editorial copy into a CMS-style table if desired, but it is not necessary for routine data updates.
+
+
+## Connection implementation (v5)
+The dashboard uses the Supabase REST API directly from `data-service.js` with the public publishable key. It does not depend on the external `supabase-js` CDN.

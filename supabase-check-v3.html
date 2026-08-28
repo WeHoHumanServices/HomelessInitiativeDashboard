@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Supabase Dashboard Connection Check</title>
+<style>
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;max-width:900px;margin:36px auto;padding:0 18px;color:#18314f;background:#f6f9fd}h1{font-size:24px}.card{background:#fff;border:1px solid #d8e3f0;border-radius:12px;padding:16px;margin:12px 0}.ok{color:#147a3f}.bad{color:#b42318}.wait{color:#5f7088}code{overflow-wrap:anywhere}table{width:100%;border-collapse:collapse}td,th{text-align:left;padding:8px;border-bottom:1px solid #e6edf5;font-size:13px}
+</style>
+<script src="supabase-config.js?v=5"></script>
+</head>
+<body>
+<h1>Supabase connection check</h1>
+<div class="card" id="startup">JavaScript started: <strong class="ok">OK</strong></div>
+<div class="card" id="config"></div>
+<div class="card"><table><thead><tr><th>Table</th><th>Result</th></tr></thead><tbody id="results"></tbody></table></div>
+<script>
+(function(){
+  const configEl=document.getElementById('config');
+  const resultsEl=document.getElementById('results');
+  const cfg=window.DASHBOARD_CONFIG||{};
+  if(!cfg.supabaseUrl||!cfg.supabasePublishableKey){
+    configEl.innerHTML='<strong class="bad">Config FAIL</strong> — supabase-config.js did not provide a URL and publishable key.';
+    return;
+  }
+  configEl.innerHTML='<strong class="ok">Config OK</strong><br><code>'+cfg.supabaseUrl.replace(/[&<>]/g,'')+'</code><br>Publishable key present: yes';
+  const tables=['dashboard_pit_observations','dashboard_pit_counts','dashboard_hcl_monthly','dashboard_hcl_heat_points','dashboard_hcl_reason_outcomes','dashboard_program_series','dashboard_holloway','dashboard_metrics','dashboard_settings'];
+  async function check(table){
+    const tr=document.createElement('tr');
+    tr.innerHTML='<td><code>'+table+'</code></td><td class="wait">Testing…</td>';
+    resultsEl.appendChild(tr);
+    const td=tr.children[1];
+    try{
+      const url=cfg.supabaseUrl.replace(/\/$/,'')+'/rest/v1/'+table+'?select=*&limit=1';
+      const r=await fetch(url,{headers:{apikey:cfg.supabasePublishableKey,Accept:'application/json'}});
+      if(!r.ok){
+        let txt=await r.text();
+        td.className='bad'; td.textContent='FAIL — HTTP '+r.status+' — '+txt.slice(0,300); return;
+      }
+      const data=await r.json();
+      td.className='ok'; td.textContent='OK — REST API readable';
+    }catch(e){
+      td.className='bad'; td.textContent='FAIL — '+(e&&e.message?e.message:String(e));
+    }
+  }
+  (async()=>{ for(const t of tables) await check(t); })();
+})();
+</script>
+</body>
+</html>

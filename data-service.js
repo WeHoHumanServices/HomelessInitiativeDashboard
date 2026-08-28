@@ -1,7 +1,7 @@
 (function () {
   const PAGE_SIZE = 1000;
 
-  function getClient() {
+  function getConfig() {
     const cfg = window.DASHBOARD_CONFIG || {};
     if (!cfg.supabaseUrl || cfg.supabaseUrl.includes('YOUR-PROJECT')) {
       throw new Error('Supabase URL has not been configured.');
@@ -9,22 +9,49 @@
     if (!cfg.supabasePublishableKey || cfg.supabasePublishableKey.includes('REPLACE_ME')) {
       throw new Error('Supabase publishable key has not been configured.');
     }
-    return window.supabase.createClient(cfg.supabaseUrl, cfg.supabasePublishableKey);
+    return {
+      url: cfg.supabaseUrl.replace(/\/$/, ''),
+      key: cfg.supabasePublishableKey
+    };
   }
 
-  async function fetchAll(client, table, select, orderColumns) {
+  async function fetchAll(cfg, table, select, orderColumns) {
     let rows = [];
-    let from = 0;
+    let offset = 0;
     while (true) {
-      let q = client.from(table).select(select || '*').range(from, from + PAGE_SIZE - 1);
-      (orderColumns || []).forEach(function (item) {
-        q = q.order(item.column, { ascending: item.ascending !== false });
+      const params = new URLSearchParams();
+      params.set('select', select || '*');
+      if (orderColumns && orderColumns.length) {
+        params.set('order', orderColumns.map(function(item) {
+          return item.column + '.' + (item.ascending === false ? 'desc' : 'asc');
+        }).join(','));
+      }
+      params.set('limit', String(PAGE_SIZE));
+      params.set('offset', String(offset));
+
+      const response = await fetch(cfg.url + '/rest/v1/' + encodeURIComponent(table) + '?' + params.toString(), {
+        method: 'GET',
+        headers: {
+          'apikey': cfg.key,
+          'Accept': 'application/json'
+        }
       });
-      const result = await q;
-      if (result.error) throw new Error(table + ': ' + result.error.message);
-      rows = rows.concat(result.data || []);
-      if (!result.data || result.data.length < PAGE_SIZE) break;
-      from += PAGE_SIZE;
+
+      if (!response.ok) {
+        let detail = '';
+        try {
+          const body = await response.json();
+          detail = body.message || body.error_description || body.hint || JSON.stringify(body);
+        } catch (_) {
+          try { detail = await response.text(); } catch (_) {}
+        }
+        throw new Error(table + ': HTTP ' + response.status + (detail ? ' — ' + detail : ''));
+      }
+
+      const page = await response.json();
+      rows = rows.concat(page || []);
+      if (!page || page.length < PAGE_SIZE) break;
+      offset += PAGE_SIZE;
     }
     return rows;
   }
@@ -36,7 +63,7 @@
   }
 
   window.loadDashboardData = async function () {
-    const client = getClient();
+    const client = getConfig();
     const [pitObs, pitCounts, hclMonthly, hclHeat, hclReason, seriesRows, hollowayRows, metricRows, settingRows] = await Promise.all([
       fetchAll(client, 'dashboard_pit_observations', '*', [{column:'observation_year'},{column:'observation_month'},{column:'id'}]),
       fetchAll(client, 'dashboard_pit_counts', '*', [{column:'sort_order'}]),
