@@ -42,6 +42,7 @@ const COLORS = {
 // HCL aggregates are computed dynamically in hclAggregateSelected() from HCL_BY_MONTH.
 // DATA below contains only the static series used by renderVisible().
 let DATA = { years:[], permTotal:[], intTotal:[], rentalTotal:[] };
+let DASHBOARD_DATA_READY = false;
 
 // ── HOLLOWAY QUARTER / YEAR FILTER ──
 // Provider fiscal-year report labels these periods Q2–Q4; the dashboard uses
@@ -51,6 +52,7 @@ function renderHolloway() {
   var qSel = document.getElementById('hw-quarter');
   if (!qSel) return;
   var d = HOLLOWAY_Q[qSel.value] || HOLLOWAY_Q.ytd;
+  if (!d) return;
   function set(id, val) { var el = document.getElementById(id); if (el) { el.textContent = val; el.setAttribute('data-raw', val); } }
   function setText(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; }
   set('hw-served', d.served); setText('hw-served-sub', d.servedSub); setText('hw-served-label', d.servedLabel);
@@ -73,7 +75,6 @@ function renderHolloway() {
   var ySel = document.getElementById('hw-year');
   if (qSel) qSel.addEventListener('change', renderHolloway);
   if (ySel) ySel.addEventListener('change', renderHolloway);
-  renderHolloway();
 })();
 
 const tooltip = document.getElementById('tooltip');
@@ -1008,7 +1009,7 @@ function renderPitCounts() {
   } else {
     if (title) title.textContent = 'Monthly counts — 2025';
     if (note) note.innerHTML = obsTip + ', Jan–Sep 2025';
-    renderBarChart('pit-monthly', PIT_MONTHS9, PIT_MONTHS9.map(function(m) { return PIT_MO_2025[m] || 0; }), {
+    renderBarChart('pit-monthly', PIT_MONTHS9, PIT_MONTHS9.map(function(_m, i) { return PIT_MO_2025[i] || 0; }), {
       max: 80,
       colors: PIT_MONTHS9.map(function() { return COLORS.blue3; }),
       format: function(v) { return v + ' individuals observed'; },
@@ -1075,7 +1076,8 @@ function showDashboardDataError(error) {
   notice.className = 'banner';
   notice.style.marginBottom = '14px';
   notice.style.borderLeftColor = '#b45a1c';
-  notice.innerHTML = '<h3>Dashboard data unavailable</h3><p>The page loaded, but its Supabase data could not be retrieved. Check <code>supabase-config.js</code>, the project URL/key, and the read-only RLS policies.</p>';
+  var detail = error && error.message ? error.message : String(error || 'Unknown error');
+  notice.innerHTML = '<h3>Dashboard data unavailable</h3><p>The page itself is working, but live data could not be retrieved.</p><p style="margin-top:8px;font-size:12px;"><strong>Technical detail:</strong> ' + pyEscape(detail) + '</p>';
   host.insertBefore(notice, host.firstChild);
 }
 
@@ -1093,8 +1095,13 @@ async function bootstrapDashboard() {
     HCL_REASON_OUTCOMES = live.hclReasonOutcomes;
     HOLLOWAY_Q = live.holloway;
     DATA = live.series;
+    DASHBOARD_DATA_READY = true;
     buildHclTimeMetadata();
     applyLiveMetrics(live.metrics || {});
+    renderHolloway();
+    if (live.errors && live.errors.length) {
+      console.warn('Dashboard loaded with partial data:', live.errors);
+    }
 
     const updated = document.getElementById('dashboard-last-updated');
     if (updated && live.settings && live.settings.last_updated_label) {
@@ -1111,6 +1118,7 @@ async function bootstrapDashboard() {
 }
 
 function renderVisible() {
+  if (!DASHBOARD_DATA_READY) return;
   renderPitCounts();
   renderLineChart('pit-trend', PIT_YR_LBLS, PIT_YR_AVGS, {
     max:70,
@@ -1147,11 +1155,13 @@ function renderVisible() {
   });
 }
 
-document.getElementById('pit-year').addEventListener('change', () => {
+var pitYearSelect = document.getElementById('pit-year');
+if (pitYearSelect) pitYearSelect.addEventListener('change', function() {
   populatePitMonths();
   pitFilter();
 });
-document.getElementById('pit-month').addEventListener('change', pitFilter);
+var pitMonthSelect = document.getElementById('pit-month');
+if (pitMonthSelect) pitMonthSelect.addEventListener('change', pitFilter);
 (function() {
   var cy = document.getElementById('pit-count-year');
   if (cy) {
@@ -1162,7 +1172,7 @@ document.getElementById('pit-month').addEventListener('change', pitFilter);
 
 window.addEventListener('resize', () => {
   clearTimeout(window.__dashResize);
-  window.__dashResize = setTimeout(() => { renderVisible(); if (_pitMap) _pitMap.invalidateSize(); }, 120);
+  window.__dashResize = setTimeout(() => { if (DASHBOARD_DATA_READY) renderVisible(); if (_pitMap) _pitMap.invalidateSize(); }, 120);
 });
 
 
