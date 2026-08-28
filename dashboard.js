@@ -140,8 +140,8 @@ function activatePage(page) {
     waitForLeaflet(function() {
       if (!_pitMap) {
         _pitMap = L.map('pit-map').setView([34.0887, -118.3671], 14);
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-          attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 19
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; OpenStreetMap contributors', maxZoom: 19
         }).addTo(_pitMap);
       }
       pitLoadBoundary();
@@ -159,8 +159,8 @@ function activatePage(page) {
       if (!_hclMap) {
         _hclMap = L.map('hcl-heatmap', {zoomControl: true, scrollWheelZoom: false})
           .setView([34.0887, -118.3671], 14);
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-          attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 19
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; OpenStreetMap contributors', maxZoom: 19
         }).addTo(_hclMap);
         // WeHo boundary overlay
         (function() {

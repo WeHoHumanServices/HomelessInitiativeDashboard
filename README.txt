@@ -1,23 +1,14 @@
-# West Hollywood Dashboard — Stable Supabase Fix
+West Hollywood Dashboard — Keyless Map Fix
 
-Upload these files to the ROOT of the GitHub Pages repository.
+Replace these two files in the root of the GitHub Pages repository:
+1. dashboard.js
+2. index.html
 
-Required replacements:
-- index.html
-- dashboard.js
-- data-service.js
-- supabase-config.js
+Changes:
+- Replaced both CARTO basemap tile layers with standard OpenStreetMap raster tiles.
+- Removed the CARTO/API-key requirement.
+- Preserved existing Leaflet maps, PIT markers, HCL heat layer, and City boundary overlay.
+- Updated the OpenStreetMap attribution.
+- Bumped the dashboard.js cache version in index.html.
 
-Also included:
-- styles.css (unchanged; included so the package is self-contained)
-
-Important:
-- This version queries Supabase REST directly. It does NOT require the Supabase JavaScript CDN.
-- supabase-config.js already contains the public project URL and publishable key previously provided.
-- Holloway rendering is guarded so it cannot crash the page before data loads.
-- Tab navigation works independently of the data load.
-- If one Supabase table fails, the remaining datasets can still load.
-- The 2025 PIT monthly chart array indexing bug is fixed.
-- Asset URLs use a new cache-busting version.
-
-After uploading/overwriting all five files, commit the changes and hard-refresh the GitHub Pages site.
+No Supabase files or database changes are required.
