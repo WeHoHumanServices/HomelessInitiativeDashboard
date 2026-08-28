@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>West Hollywood Homeless Initiative Dashboard</title>
+<link href="styles.css" rel="stylesheet"/>
+<link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+</head>
+<body>
+
+<div class="header">
+<div class="header-inner">
+<div>
+<div class="header-eyebrow">City of West Hollywood  ·  Human Services Division</div>
+<h1>West Hollywood Homeless Initiative Dashboard</h1>
+<div class="sub">Programs, system performance, and outcomes across West Hollywood’s homelessness response system.</div>
+</div>
+</div>
+</div>
+<div class="tabs-wrap">
+<div class="tabs-label">Explore the system — select a section below</div>
+<div aria-label="Dashboard sections" class="tabs" role="tablist">
+<button aria-label="Summary: key outcomes and how to navigate" aria-selected="true" class="tab active" data-page="intro" role="tab" title="Summary: key outcomes and how to navigate">
+<span class="tab-icon"><svg aria-hidden="true" class="oico" fill="none" focusable="false" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9" viewbox="0 0 24 24"><path d="M3 21V9l5-3v4l5-3v5l5-2v11z"></path><path d="M3 21h18"></path><path d="M8 12.5v.01M8 16v.01M13 12.5v.01M13 16v.01M18 12.5v.01M18 16v.01"></path></svg></span>
+<span class="tab-text">
+<span class="tab-title">At a Glance</span>
+<span class="tab-desc">Start here</span>
+</span>
+</button>
+<button aria-label="Overview: how the response system is structured and coordinated" aria-selected="false" class="tab" data-page="overview" role="tab" title="Overview: how the response system is structured and coordinated">
+<span class="tab-icon"><svg aria-hidden="true" class="oico" fill="none" focusable="false" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9" viewbox="0 0 24 24"><path d="M4 20V4"></path><path d="M4 20h16"></path><rect height="5" width="2.6" x="7.5" y="12"></rect><rect height="8.5" width="2.6" x="12.2" y="8.5"></rect><rect height="6.5" width="2.6" x="16.9" y="10.5"></rect></svg></span>
+<span class="tab-text">
+<span class="tab-title">System Overview</span>
+<span class="tab-desc">System design</span>
+</span>
+</button>
+<button aria-label="Unsheltered Counts and Locations: counts, trends, and observed locations" aria-selected="false" class="tab" data-page="pit" role="tab" title="Unsheltered Counts and Locations: counts, trends, and observed locations">
+<span class="tab-icon"><svg aria-hidden="true" class="oico" fill="none" focusable="false" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9" viewbox="0 0 24 24"><path d="M12 21s6-5.2 6-10a6 6 0 0 0-12 0c0 4.8 6 10 6 10z"></path><circle cx="12" cy="11" r="2.3"></circle></svg></span>
+<span class="tab-text">
+<span class="tab-title">Unsheltered Counts &amp; Locations</span>
+<span class="tab-desc">Counts &amp; locations</span>
+</span>
+</button>
+<button aria-label="Concern Line: who calls, why they call, and how the City responds" aria-selected="false" class="tab" data-page="hcl" role="tab" title="Concern Line: who calls, why they call, and how the City responds">
+<span class="tab-icon"><svg aria-hidden="true" class="oico" fill="none" focusable="false" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9" viewbox="0 0 24 24"><path d="M6.5 3.5h3l1.5 4-2 1.5a11 11 0 0 0 5 5l1.5-2 4 1.5v3a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 4.5 5.7 2 2 0 0 1 6.5 3.5z"></path></svg></span>
+<span class="tab-text">
+<span class="tab-title">Concern Line</span>
+<span class="tab-desc">Calls &amp; responses</span>
+</span>
+</button>
+<button aria-label="Housing: shelter use and permanent housing outcomes" aria-selected="false" class="tab" data-page="housing" role="tab" title="Housing: shelter use and permanent housing outcomes">
+<span class="tab-icon"><svg aria-hidden="true" class="oico" fill="none" focusable="false" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9" viewbox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5 9.5V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9.5"></path><path d="M9.5 21v-6h5v6"></path></svg></span>
+<span class="tab-text">
+<span class="tab-title">Housing</span>
+<span class="tab-desc">Shelter &amp; placements</span>
+</span>
+</button>
+<button aria-label="Prevention: rental assistance, legal support, and housing stability" aria-selected="false" class="tab" data-page="prevention" role="tab" title="Prevention: rental assistance, legal support, and housing stability">
+<span class="tab-icon"><svg aria-hidden="true" class="oico" fill="none" focusable="false" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9" viewbox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"></path></svg></span>
+<span class="tab-text">
+<span class="tab-title">Prevention</span>
+<span class="tab-desc">Staying housed</span>
+</span>
+</button>
+<button aria-label="About and Methods: data sources, definitions, periods, and contact" aria-selected="false" class="tab" data-page="about" role="tab" title="About and Methods: data sources, definitions, periods, and contact">
+<span class="tab-icon"><svg aria-hidden="true" class="oico" fill="none" focusable="false" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9" viewbox="0 0 24 24"><circle cx="12" cy="12" r="8.5"></circle><path d="M12 11v5"></path><path d="M12 7.6v.01"></path></svg></span>
+<span class="tab-text">
+<span class="tab-title">About &amp; Methods</span>
+<span class="tab-desc">Sources &amp; definitions</span>
+</span>
+</button>
+</div>
+</div>
+<div class="main">
+<!-- ── SUMMARY / DASHBOARD GUIDE PAGE ── -->
+<section class="page active" id="page-intro">
+<div class="page-header">
+<div class="page-header-icon"><svg aria-hidden="true" class="oico" fill="none" focusable="false" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9" viewbox="0 0 24 24"><path d="M3 21V9l5-3v4l5-3v5l5-2v11z"></path><path d="M3 21h18"></path><path d="M8 12.5v.01M8 16v.01M13 12.5v.01M13 16v.01M18 12.5v.01M18 16v.01"></path></svg></div>
+<div>
+<div class="page-header-title">Dashboard at a Glance</div>
+</div>
+</div>
+<div class="summary-hero dashboard-guide-hero">
+<div class="summary-eyebrow">West Hollywood Homeless Initiative Dashboard</div>
+<div class="summary-headline">A snapshot of local service activity, outcomes, and system improvement work.</div>
+<p class="summary-copy">This dashboard summarizes <span class="glossary-term" data-tip="&lt;strong&gt;operational, programmatic, and outcome data&lt;/strong&gt;Information about day-to-day service activity, program delivery, and results such as housing placements or services provided." tabindex="0">operational, programmatic, and outcome data</span> for City-funded homelessness response and prevention programs. For sources, definitions, periods, and limitations, see the <a href="#about" onclick="document.querySelector('[data-page=about]').click(); return false;" style="color:var(--blue);font-weight:700;text-decoration:none;border-bottom:1px dotted var(--blue);">About &amp; Methods</a> tab.</p>
+<div class="dashboard-contains-grid">
+<div class="dashboard-contains-card">
+<div class="dash-card-icon"><svg aria-hidden="true" class="oico" fill="none" focusable="false" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9" viewbox="0 0 24 24"><path d="M12 21s6-5.2 6-10a6 6 0 0 0-12 0c0 4.8 6 10 6 10z"></path><circle cx="12" cy="11" r="2.3"></circle></svg></div>
+<div>
+<h4>Unsheltered Counts &amp; Locations</h4>
+<p>Monthly count trends and mapped observations from field outreach.</p>
+</div>
+</div>
+<div class="dashboard-contains-card">
+<div class="dash-card-icon"><svg aria-hidden="true" class="oico" fill="none" focusable="false" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9" viewbox="0 0 24 24"><path d="M6.5 3.5h3l1.5 4-2 1.5a11 11 0 0 0 5 5l1.5-2 4 1.5v3a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 4.5 5.7 2 2 0 0 1 6.5 3.5z"></path></svg></div>
+<div>
+<h4>Concern Line Activity</h4>
+<p>Requests, reasons for calls, response patterns, and field outcomes.</p>
+</div>
+</div>
+<div class="dashboard-contains-card">
+<div class="dash-card-icon"><svg aria-hidden="true" class="oico" fill="none" focusable="false" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9" viewbox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5 9.5V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9.5"></path><path d="M9.5 21v-6h5v6"></path></svg></div>
+<div>
+<h4>Housing Outcomes</h4>
+<p><span class="glossary-term" data-tip="&lt;strong&gt;interim housing&lt;/strong&gt;Short-term housing with support services while someone works toward a longer-term housing option." tabindex="0">Interim housing</span> and <span class="glossary-term" data-tip="&lt;strong&gt;permanent housing&lt;/strong&gt;Long-term housing intended to provide ongoing housing stability, including independent housing and permanent supportive housing." tabindex="0">permanent housing</span> placements.</p>
+</div>
+</div>
+<div class="dashboard-contains-card">
+<div class="dash-card-icon"><svg aria-hidden="true" class="oico" fill="none" focusable="false" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9" viewbox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"></path></svg></div>
+<div>
+<h4>Prevention Services</h4>
+<p>Rental assistance, eviction defense, and housing stability supports.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="summary-section">
+<div class="summary-section-heading">
+<h2>Topline dashboard metrics</h2>
+<p>Selected measures that summarize overall service activity and outcomes. Periods differ — read each badge.</p>
+</div>
+<div class="grid kpi-grid k4 summary-kpi">
+<div class="kpi">
+<span class="period-eyebrow cumulative">2016 to date</span>
+<div class="k-label">People housed</div>
+<div class="k-value" data-metric="people_housed_total">—</div>
+<div class="k-sub">Long-term housing outcomes · includes 2026 year to date</div>
+</div>
+<div class="kpi alt">
+<span class="period-eyebrow cumulative">2017 to date</span>
+<div class="k-label">Interim placements</div>
+<div class="k-value" data-metric="interim_placements_total">—</div>
+<div class="k-sub">Interim housing activity · includes 2026 year to date</div>
+</div>
+<div class="kpi alt2">
+<span class="period-eyebrow cumulative">2017 to date</span>
+<div class="k-label">Households supported</div>
+<div class="k-value" data-metric="rental_households_total">—</div>
+<div class="k-sub">Rental assistance activity · includes 2026 year to date</div>
+</div>
+<div class="kpi">
+<span class="period-eyebrow recent">Jul 2025 – Jul 2026</span>
+<div class="k-label">Service requests</div>
+<div class="k-value" data-derived="hcl-total">—</div>
+<div class="k-sub">Homeless Concern Line activity</div>
+</div>
+</div>
+</div>
+<div class="summary-section">
+<div class="card summary-takeaways-card" style="max-width:none;">
+<h3>Key takeaways from the dashboard</h3>
+<ul class="takeaway-list">
+<li><span></span><p><strong>Permanent housing placements reached a record high in 2024,</strong> with 72 people housed.</p></li>
+<li><span></span><p><strong>The Homeless Concern Line is a primary access point</strong> for homelessness-related service requests and field response.</p></li>
+<li><span></span><p><strong>Interim housing capacity expanded locally</strong> with 20 in-city, <span class="glossary-term" data-tip="&lt;strong&gt;non-congregate&lt;/strong&gt;A housing setting where people have private rooms or units rather than sleeping in a shared dorm-style space." tabindex="0">non-congregate</span> beds (Holloway Interim Housing Program) for people experiencing chronic homelessness and disability.</p></li>
+</ul>
+</div>
+</div>
+<div class="summary-section">
+<div class="card" style="max-width:none;">
+<h3>Who is served</h3>
+<div class="note">Who the City’s street outreach team reached and helped.</div>
+<div class="how-read" style="margin:10px 0 12px;">Figures below cover <strong>146 people</strong> served in <strong>2024–25</strong> (October through September) by Ascencia. Several agencies conducted outreach during this period, but Ascencia’s long tenure and consistent, well-documented recordkeeping make its unduplicated client data the most complete and reliable source — which is why its reports were used here. Showing a single provider also avoids the possibility of double-counting people served by more than one agency. As a result, these figures reflect Ascencia’s clients rather than everyone the City reached. Ascencia’s contract ended in September 2025; data from Healthcare in Action, the current lead provider, is being collected for this fiscal year and will be added when ready.</div>
+<div class="grid kpi-grid k3">
+<div class="kpi"><span class="period-eyebrow recent">Oct 2024 – Sep 2025</span><div class="k-label">People of color</div><div class="k-value" data-metric="outreach_people_of_color_pct">—</div><div class="k-sub">104 of the 146 people served</div></div>
+<div class="kpi alt"><span class="period-eyebrow recent">Oct 2024 – Sep 2025</span><div class="k-label">Transgender</div><div class="k-value" data-metric="outreach_transgender_pct">—</div><div class="k-sub">17 people</div></div>
+<div class="kpi alt2"><span class="period-eyebrow recent">Oct 2024 – Sep 2025</span><div class="k-label">Age 50 or older</div><div class="k-value" data-metric="outreach_age_50_plus_pct">—</div><div class="k-sub">55 people</div></div>
+</div>
+<div class="grid panel-grid two" style="margin-top:12px;">
+<div class="card"><h3>Race and ethnicity</h3>
+<div class="note">People who are Latino or Hispanic are shown as one group, whatever their race.</div>
+<div class="rows"><div class="row"><div class="row-label">Latino or Hispanic</div><div class="row-track"><div class="row-fill row-bar" data-tip="&lt;strong&gt;Latino or Hispanic&lt;/strong&gt;56 of 146 people (38%)&lt;br&gt;&lt;span class='muted'&gt;Counted here whatever their race.&lt;/span&gt;" style="width:100.0%;background:var(--blue)">38%</div></div><div class="row-value">56</div></div><div class="row"><div class="row-label">White</div><div class="row-track"><div class="row-fill row-bar" data-tip="&lt;strong&gt;White&lt;/strong&gt;42 of 146 people (29%)&lt;br&gt;&lt;span class='muted'&gt;White and not Latino or Hispanic.&lt;/span&gt;" style="width:75.0%;background:var(--blue2)">29%</div></div><div class="row-value">42</div></div><div class="row"><div class="row-label">Black or African American</div><div class="row-track"><div class="row-fill row-bar" data-tip="&lt;strong&gt;Black or African American&lt;/strong&gt;40 of 146 people (27%)&lt;br&gt;&lt;span class='muted'&gt;Black or African American and not Latino or Hispanic.&lt;/span&gt;" style="width:71.4%;background:var(--blue3)">27%</div></div><div class="row-value">40</div></div><div class="row"><div class="row-label">Other or multiple races</div><div class="row-track"><div class="row-fill row-bar narrow" data-pct="5%" data-tip="&lt;strong&gt;Other or multiple races&lt;/strong&gt;8 of 146 people (5%)&lt;br&gt;&lt;span class='muted'&gt;Asian, Native American, Pacific Islander, and people of more than one race. Combined because each group was fewer than 11 people.&lt;/span&gt;" style="width:14.3%;background:#7eaed9"></div></div><div class="row-value">8</div></div></div></div>
+<div class="card"><h3>Age</h3>
+<div class="note">Everyone served was an adult. The largest single group was ages 24 to 39.</div>
+<div class="rows"><div class="row"><div class="row-label">Under 40</div><div class="row-track"><div class="row-fill row-bar" data-tip="&lt;strong&gt;Under 40&lt;/strong&gt;64 of 146 people (44%)&lt;br&gt;&lt;span class='muted'&gt;Everyone served was an adult. The largest single group was ages 24 to 39.&lt;/span&gt;" style="width:100.0%;background:var(--blue)">44%</div></div><div class="row-value">64</div></div><div class="row"><div class="row-label">40 to 49</div><div class="row-track"><div class="row-fill row-bar" data-tip="&lt;strong&gt;40 to 49&lt;/strong&gt;27 of 146 people (18%)&lt;br&gt;&lt;span class='muted'&gt; &lt;/span&gt;" style="width:42.2%;background:var(--blue2)">18%</div></div><div class="row-value">27</div></div><div class="row"><div class="row-label">50 to 59</div><div class="row-track"><div class="row-fill row-bar" data-tip="&lt;strong&gt;50 to 59&lt;/strong&gt;34 of 146 people (23%)&lt;br&gt;&lt;span class='muted'&gt; &lt;/span&gt;" style="width:53.1%;background:var(--blue3)">23%</div></div><div class="row-value">34</div></div><div class="row"><div class="row-label">60 or older</div><div class="row-track"><div class="row-fill row-bar" data-tip="&lt;strong&gt;60 or older&lt;/strong&gt;21 of 146 people (14%)&lt;br&gt;&lt;span class='muted'&gt;Ages 60 to 79. Combined so that every group shown has at least 11 people.&lt;/span&gt;" style="width:32.8%;background:#7eaed9">14%</div></div><div class="row-value">21</div></div></div></div>
+</div>
+<div class="grid panel-grid two" style="margin-top:12px;">
+<div class="card"><h3>Gender</h3>
+<div class="note">People who identify as transgender men or transgender women are included in the men and women categories below — 17 people, or 12% of those served.</div>
+<div class="rows"><div class="row"><div class="row-label">Men</div><div class="row-track"><div class="row-fill row-bar" data-tip="&lt;strong&gt;Men&lt;/strong&gt;80 of 146 people (55%)&lt;br&gt;&lt;span class='muted'&gt;Includes transgender men.&lt;/span&gt;" style="width:100.0%;background:var(--blue)">55%</div></div><div class="row-value">80</div></div><div class="row"><div class="row-label">Women</div><div class="row-track"><div class="row-fill row-bar" data-tip="&lt;strong&gt;Women&lt;/strong&gt;59 of 146 people (40%)&lt;br&gt;&lt;span class='muted'&gt;Includes transgender women.&lt;/span&gt;" style="width:73.8%;background:var(--blue2)">40%</div></div><div class="row-value">59</div></div><div class="row"><div class="row-label">Nonbinary</div><div class="row-track"><div class="row-fill row-bar narrow" data-pct="5%" data-tip="&lt;strong&gt;Nonbinary&lt;/strong&gt;7 of 146 people (5%)&lt;br&gt;&lt;span class='muted'&gt;People who identify as nonbinary or gender nonconforming.&lt;/span&gt;" style="width:8.8%;background:var(--blue3)"></div></div><div class="row-value">7</div></div></div></div>
+<div class="card"><h3>Primary language</h3>
+<div class="note">The language each person mainly speaks.</div>
+<div class="rows"><div class="row"><div class="row-label">English</div><div class="row-track"><div class="row-fill row-bar" data-tip="&lt;strong&gt;English&lt;/strong&gt;135 of 146 people (92%)&lt;br&gt;&lt;span class='muted'&gt; &lt;/span&gt;" style="width:100.0%;background:var(--blue)">92%</div></div><div class="row-value">135</div></div><div class="row"><div class="row-label">Spanish</div><div class="row-track"><div class="row-fill row-bar narrow" data-pct="7%" data-tip="&lt;strong&gt;Spanish&lt;/strong&gt;10 of 146 people (7%)&lt;br&gt;&lt;span class='muted'&gt; &lt;/span&gt;" style="width:7.4%;background:var(--blue2)"></div></div><div class="row-value">10</div></div></div>
+<div class="note" style="margin-top:8px;">One additional person was identified as speaking a language that was not specified, so the bars above cover 145 of the 146 people served.</div></div>
+</div>
+<div class="card" style="margin-top:12px;">
+<h3>How this has changed</h3>
+<div class="note">Four contract years of outreach, October through September.</div>
+<div class="grid panel-grid demographic-trend-grid"><div><div style="font-size:12.5px;font-weight:800;color:var(--heading);margin-bottom:2px;">Men and women<span style="font-weight:700;font-size:10.5px;margin-left:6px;"><span style="color:var(--blue);">● Men</span> <span style="color:var(--blue3);">● Women</span></span></div><svg aria-label="Share of people served who are men and women, 2021-22 to 2024-25" class="chart-svg" role="img" style="max-height:112px;" viewbox="0 0 320 112"><line stroke="var(--line)" stroke-width="1" x1="40" x2="286" y1="84.0" y2="84.0"></line><text fill="var(--muted)" font-size="9" text-anchor="end" x="33" y="87.4">0%</text><line stroke="var(--line)" stroke-width="1" x1="40" x2="286" y1="52.0" y2="52.0"></line><text fill="var(--muted)" font-size="9" text-anchor="end" x="33" y="55.4">40%</text><line stroke="var(--line)" stroke-width="1" x1="40" x2="286" y1="20.0" y2="20.0"></line><text fill="var(--muted)" font-size="9" text-anchor="end" x="33" y="23.4">80%</text><path d="M40.0,25.6 L122.0,28.0 L204.0,33.6 L286.0,40.0" fill="none" stroke="var(--blue)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4"></path><circle cx="40.0" cy="25.6" fill="#fff" r="3.1" stroke="var(--blue)" stroke-width="2"></circle><circle cx="122.0" cy="28.0" fill="#fff" r="3.1" stroke="var(--blue)" stroke-width="2"></circle><circle cx="204.0" cy="33.6" fill="#fff" r="3.1" stroke="var(--blue)" stroke-width="2"></circle><circle cx="286.0" cy="40.0" fill="#fff" r="3.1" stroke="var(--blue)" stroke-width="2"></circle><text fill="var(--blue)" font-size="10.5" font-weight="800" text-anchor="start" x="42.0" y="17.6">73%</text><text fill="var(--blue)" font-size="10.5" font-weight="800" text-anchor="end" x="284.0" y="32.0">55%</text><path d="M40.0,62.4 L122.0,61.6 L204.0,55.2 L286.0,52.0" fill="none" stroke="var(--blue3)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4"></path><circle cx="40.0" cy="62.4" fill="#fff" r="3.1" stroke="var(--blue3)" stroke-width="2"></circle><circle cx="122.0" cy="61.6" fill="#fff" r="3.1" stroke="var(--blue3)" stroke-width="2"></circle><circle cx="204.0" cy="55.2" fill="#fff" r="3.1" stroke="var(--blue3)" stroke-width="2"></circle><circle cx="286.0" cy="52.0" fill="#fff" r="3.1" stroke="var(--blue3)" stroke-width="2"></circle><text fill="var(--blue3)" font-size="10.5" font-weight="800" text-anchor="start" x="42.0" y="75.4">27%</text><text fill="var(--blue3)" font-size="10.5" font-weight="800" text-anchor="end" x="284.0" y="65.0">40%</text><text fill="var(--muted)" font-size="9.5" font-weight="600" text-anchor="middle" x="40.0" y="108">2021–22</text><text fill="var(--muted)" font-size="9.5" font-weight="600" text-anchor="middle" x="122.0" y="108">2022–23</text><text fill="var(--muted)" font-size="9.5" font-weight="600" text-anchor="middle" x="204.0" y="108">2023–24</text><text fill="var(--muted)" font-size="9.5" font-weight="600" text-anchor="middle" x="286.0" y="108">2024–25</text></svg></div><div><div style="font-size:12.5px;font-weight:800;color:var(--heading);margin-bottom:2px;">Latino or Hispanic</div><svg aria-label="Share of people served who are Latino or Hispanic, 2021-22 to 2024-25" class="chart-svg" role="img" style="max-height:112px;" viewbox="0 0 320 112"><line stroke="var(--line)" stroke-width="1" x1="40" x2="286" y1="84.0" y2="84.0"></line><text fill="var(--muted)" font-size="9" text-anchor="end" x="33" y="87.4">0%</text><line stroke="var(--line)" stroke-width="1" x1="40" x2="286" y1="52.0" y2="52.0"></line><text fill="var(--muted)" font-size="9" text-anchor="end" x="33" y="55.4">25%</text><line stroke="var(--line)" stroke-width="1" x1="40" x2="286" y1="20.0" y2="20.0"></line><text fill="var(--muted)" font-size="9" text-anchor="end" x="33" y="23.4">50%</text><path d="M40.0,48.2 L122.0,52.0 L204.0,52.0 L286.0,35.4" fill="none" stroke="var(--blue)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4"></path><circle cx="40.0" cy="48.2" fill="#fff" r="3.1" stroke="var(--blue)" stroke-width="2"></circle><circle cx="122.0" cy="52.0" fill="#fff" r="3.1" stroke="var(--blue)" stroke-width="2"></circle><circle cx="204.0" cy="52.0" fill="#fff" r="3.1" stroke="var(--blue)" stroke-width="2"></circle><circle cx="286.0" cy="35.4" fill="#fff" r="3.1" stroke="var(--blue)" stroke-width="2"></circle><text fill="var(--blue)" font-size="10.5" font-weight="800" text-anchor="start" x="42.0" y="40.2">28%</text><text fill="var(--blue)" font-size="10.5" font-weight="800" text-anchor="end" x="284.0" y="27.4">38%</text><text fill="var(--muted)" font-size="9.5" font-weight="600" text-anchor="middle" x="40.0" y="108">2021–22</text><text fill="var(--muted)" font-size="9.5" font-weight="600" text-anchor="middle" x="122.0" y="108">2022–23</text><text fill="var(--muted)" font-size="9.5" font-weight="600" text-anchor="middle" x="204.0" y="108">2023–24</text><text fill="var(--muted)" font-size="9.5" font-weight="600" text-anchor="middle" x="286.0" y="108">2024–25</text></svg></div><div><div style="font-size:12.5px;font-weight:800;color:var(--heading);margin-bottom:2px;">People served</div><svg aria-label="Total people served each year, 2021-22 to 2024-25" class="chart-svg" role="img" style="max-height:112px;" viewbox="0 0 320 112"><line stroke="var(--line)" stroke-width="1" x1="40" x2="286" y1="84.0" y2="84.0"></line><text fill="var(--muted)" font-size="9" text-anchor="end" x="33" y="87.4">0</text><line stroke="var(--line)" stroke-width="1" x1="40" x2="286" y1="52.0" y2="52.0"></line><text fill="var(--muted)" font-size="9" text-anchor="end" x="33" y="55.4">100</text><line stroke="var(--line)" stroke-width="1" x1="40" x2="286" y1="20.0" y2="20.0"></line><text fill="var(--muted)" font-size="9" text-anchor="end" x="33" y="23.4">200</text><path d="M40.0,41.8 L122.0,35.0 L204.0,29.9 L286.0,37.3" fill="none" stroke="var(--blue)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4"></path><circle cx="40.0" cy="41.8" fill="#fff" r="3.1" stroke="var(--blue)" stroke-width="2"></circle><circle cx="122.0" cy="35.0" fill="#fff" r="3.1" stroke="var(--blue)" stroke-width="2"></circle><circle cx="204.0" cy="29.9" fill="#fff" r="3.1" stroke="var(--blue)" stroke-width="2"></circle><circle cx="286.0" cy="37.3" fill="#fff" r="3.1" stroke="var(--blue)" stroke-width="2"></circle><text fill="var(--blue)" font-size="10.5" font-weight="800" text-anchor="start" x="42.0" y="33.8">132</text><text fill="var(--blue)" font-size="10.5" font-weight="800" text-anchor="end" x="284.0" y="29.3">146</text><text fill="var(--muted)" font-size="9.5" font-weight="600" text-anchor="middle" x="40.0" y="108">2021–22</text><text fill="var(--muted)" font-size="9.5" font-weight="600" text-anchor="middle" x="122.0" y="108">2022–23</text><text fill="var(--muted)" font-size="9.5" font-weight="600" text-anchor="middle" x="204.0" y="108">2023–24</text><text fill="var(--muted)" font-size="9.5" font-weight="600" text-anchor="middle" x="286.0" y="108">2024–25</text></svg></div></div>
+<div class="note" style="margin-top:10px;">The share of women reached increased each year, while Latino or Hispanic representation rose most noticeably in 2024–25. The total number served peaked in 2023–24 before declining in the latest contract year.</div>
+</div>
+<div class="how-read" style="margin-top:12px;border-left-color:#d4a043;background:#fff8e6;border-color:#f0d997;"><strong>About these numbers:</strong> Ascencia reported that each person is counted once, no matter how many times they were helped. These numbers cover one provider’s work. They are not a count of everyone experiencing homelessness in West Hollywood.</div>
+</div>
+</div>
+<div class="summary-section">
+<div class="card" style="padding:14px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+<div style="flex:1 1 320px;">
+<h3 style="margin:0 0 4px;font-size:14px;color:var(--heading);">Data sources, definitions, and limitations</h3>
+<p style="margin:0;color:#4b5f78;font-size:12.5px;line-height:1.5;">Most service metrics are reported quarterly by contracted providers; operational metrics come from City tracking and response systems. Full source list, glossary, and known limitations are on the About &amp; Methods tab.</p>
+</div>
+<button onclick="document.querySelector('[data-page=about]').click();" style="border:1px solid var(--blue);background:var(--blue5);color:var(--blue);font-weight:700;font-size:12px;padding:9px 14px;border-radius:10px;cursor:pointer;white-space:nowrap;">Open About &amp; Methods →</button>
+</div>
+</div>
+</section>
+<section class="page" id="page-overview">
+<div class="page-header">
+<div class="page-header-icon"><svg aria-hidden="true" class="oico" fill="none" focusable="false" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9" viewbox="0 0 24 24"><path d="M4 20V4"></path><path d="M4 20h16"></path><rect height="5" width="2.6" x="7.5" y="12"></rect><rect height="8.5" width="2.6" x="12.2" y="8.5"></rect><rect height="6.5" width="2.6" x="16.9" y="10.5"></rect></svg></div>
+<div>
+<div class="page-header-title">How the System Works</div>
+</div>
+</div>
+<div class="hero">
+      West Hollywood funds services to prevent homelessness and to help people experiencing homelessness find and maintain stable housing. The City's response runs 24/7 through City-contracted providers and the Homeless Concern Line, organized across 3 core service areas. Over the past nine years, the system has provided over 1,800 households with rental assistance to prevent homelessness, and has supported people experiencing homelessness by placing 872 individuals in interim housing and helping 436 secure permanent housing.*
+      <small>* The City's Homeless Initiative launched in 2017 and data collection began at that time. Some components of outcome tracking, including permanent housing placements, began in 2016 and have continued to strengthen as reporting practices matured.</small>
+</div>
+<div class="card" style="margin-top:12px;">
+<h3>Response pathway</h3>
+<div class="note">Most people connect to the system through the Homeless Concern Line or proactive outreach by City-funded providers.</div>
+<div class="flow">
+<div class="step">
+<div class="step-num">1</div>
+<h4>Outreach &amp; engagement</h4>
+<p>Teams engage people where they are, build trust, and connect them to services.</p>
+</div>
+<div class="step">
+<div class="step-num">2</div>
+<h4>Assessment &amp; connection</h4>
+<p>Teams assess health and housing needs, then connect individuals to care, benefits, <span class="glossary-term" data-tip="&lt;strong&gt;case management&lt;/strong&gt;One-on-one support to help someone access services, documents, benefits, housing, and follow-up care." tabindex="0">case management</span>, or other support.</p>
+</div>
+<div class="step">
+<div class="step-num">3</div>
+<h4><span class="glossary-term" data-tip="&lt;strong&gt;Interim housing&lt;/strong&gt;Short-term housing with support services while someone works toward a longer-term housing option." tabindex="0">Interim housing</span></h4>
+<p>When someone is ready, City-funded outreach teams connect them to interim housing options, including Holloway for eligible community members.</p>
+</div>
+<div class="step">
+<div class="step-num">4</div>
+<h4><span class="glossary-term" data-tip="&lt;strong&gt;Permanent housing&lt;/strong&gt;Long-term housing intended to provide ongoing housing stability, including independent housing and permanent supportive housing." tabindex="0">Permanent housing</span></h4>
+<p>Case managers help individuals secure identification, benefits, and long-term <span class="glossary-term" data-tip="&lt;strong&gt;permanent housing&lt;/strong&gt;Long-term housing intended to provide ongoing housing stability, including independent housing and permanent supportive housing." tabindex="0">permanent housing</span> placements — and provide ongoing support to help people remain housed.</p>
+</div>
+</div>
+</div>
+<h2 class="section-title" style="margin-top:18px;">Core service areas</h2>
+<p class="section-sub">The City funds services preventing and addressing homelessness across these 3 core areas.</p>
+<div class="service-summary-grid">
+<div class="service-summary-card">
+<h4>Outreach &amp; Behavioral Health Response</h4>
+<p>Homeless Concern Line dispatch, street outreach, wellness checks, behavioral health response, and field-based service connection.</p>
+</div>
+<div class="service-summary-card">
+<h4>Housing &amp; Navigation</h4>
+<p>Interim housing, case management, housing navigation, permanent supportive housing connections, and voucher support.</p>
+</div>
+<div class="service-summary-card">
+<h4>Prevention &amp; Stabilization</h4>
+<p>Rental assistance, eviction prevention, legal services, tenant rights support, health services, and recovery resources.</p>
+</div>
+</div>
+<div class="banner" style="margin-top:16px;">
+<div class="eyebrow">System improvement underway</div>
+<h3>Coordinated Response Framework (CRF)</h3>
+<p>The CRF strengthens coordination across providers, clarifies response roles, improves protocols, and aligns data — building on existing investments and focused on improving the number of people becoming and remaining housed.</p>
+</div>
+</section>
+<section class="page" id="page-pit">
+<div class="page-header">
+<div class="page-header-icon"><svg aria-hidden="true" class="oico" fill="none" focusable="false" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9" viewbox="0 0 24 24"><path d="M12 21s6-5.2 6-10a6 6 0 0 0-12 0c0 4.8 6 10 6 10z"></path><circle cx="12" cy="11" r="2.3"></circle></svg></div>
+<div>
+<div class="page-header-title">Unsheltered Counts &amp; Locations</div>
+</div>
+</div>
+<div class="hero">
+      The charts and map below help the City understand where people are being observed and how conditions shift over time. West Hollywood's contracted outreach providers conducted regular <span class="glossary-term" data-tip="&lt;strong&gt;Point-in-Time (PIT) data&lt;/strong&gt;A snapshot count of people experiencing homelessness during a defined observation period. PIT-related data helps communities understand trends and service needs, but it should not be interpreted as a complete census of every person experiencing homelessness." tabindex="0">Point-in-Time (PIT)</span>-related field counts monthly from 2017 through September 2025, and quarterly beginning in 2026, providing trend data to support operational awareness, community transparency, and service deployment planning.
+</div>
+<div class="how-read" style="border-left-color:#d4a043;background:#fff8e6;border-color:#f0d997;"><strong>Important data note:</strong> <strong>Monthly counts were collected through September 2025</strong>, when the Ascencia outreach and engagement contract ended. Beginning in 2026, <strong>the City moved to quarterly counts</strong>, currently conducted by Healthcare in Action. The counting method itself is unchanged and was shared with the new provider, but both the cadence and the team conducting the count changed — so 2026 quarterly counts are not directly comparable to earlier monthly counts. Use the year selector to switch between the two. See the <strong>About &amp; Methods</strong> tab for details.</div>
+<div class="how-read"><strong>How to read this section:</strong> These are observations during field counts, useful for trend monitoring and service planning. They are not a complete census.</div>
+<div class="grid panel-grid two">
+<div class="card">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;">
+<h3 id="pit-count-title">Monthly counts — 2025</h3>
+<div>
+<label for="pit-count-year" style="font-size:12px;font-weight:700;color:var(--muted);margin-right:6px;">Year</label>
+<select id="pit-count-year" style="font-size:13px;font-family:inherit;border:1px solid var(--line);border-radius:10px;padding:5px 10px;color:#27405f;background:#fff;">
+<option value="2025">2025 · monthly</option>
+<option selected="" value="2026">2026 · quarterly</option>
+</select>
+</div>
+</div>
+<div class="note" id="pit-count-note"><span class="glossary-term" data-tip="&lt;strong&gt;Observed unsheltered individuals&lt;/strong&gt;People seen by outreach teams during field counts; this may not capture every person experiencing homelessness in the City." tabindex="0">Observed unsheltered individuals</span>, Jan–Sep 2025</div>
+<div aria-label="Bar chart of observed unsheltered individuals. Loading…" class="chart compact" id="pit-monthly" role="img"></div>
+<div class="note" id="pit-count-foot" style="margin-top:6px;"></div>
+</div>
+<div class="card">
+<h3>Long-term trend</h3>
+<div class="note">Average number of individuals observed per count event, 2017–2026. Counts were monthly through 2025 and quarterly from 2026, so each year reflects the average of that year's count events. The 2026 point is shown with a dashed line because it averages the two quarterly counts reported so far (Q1 and Q2) rather than a complete year.</div>
+<div aria-label="Line chart of the average number of individuals observed per count event by year, 2017 to 2026. Loading…" class="chart compact" id="pit-trend" role="img"></div>
+</div>
+</div>
+<div class="card" style="margin-top:12px; padding:0; overflow:hidden;">
+<div style="padding:13px 15px 8px;">
+<h3>Where people were observed</h3>
+<div class="note" style="margin-bottom:10px;">Larger dots = more people observed. Locations reflect where people were seen during field counts.</div>
+<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+<div>
+<label style="font-size:12px;font-weight:700;color:var(--muted);margin-right:6px;">Year</label>
+<select id="pit-year" style="font-size:13px;font-family:inherit;border:1px solid var(--line);border-radius:10px;padding:5px 10px;color:#27405f;background:#fff;">
+<option value="all">All (2024–2026)</option>
+<option value="2024">2024</option>
+<option value="2025">2025</option>
+<option selected="" value="2026">2026</option>
+</select>
+</div>
+<div>
+<label style="font-size:12px;font-weight:700;color:var(--muted);margin-right:6px;">Month</label>
+<select id="pit-month" style="font-size:13px;font-family:inherit;border:1px solid var(--line);border-radius:10px;padding:5px 10px;color:#27405f;background:#fff;"></select>
+</div>
+<div id="pit-summary" style="font-size:12px;color:var(--muted);margin-left:4px;"></div>
+</div>
+</div>
+<div aria-label="Map of West Hollywood showing locations where unsheltered individuals were observed during field counts. Larger dots represent more people observed at a location. Use the year and month dropdowns above to filter." id="pit-map" role="img" style="height:420px;width:100%;"></div>
+</div>
+<div class="banner" style="margin-top:12px; border-left-color:var(--blue2);">
+<p><strong>Trend:</strong> West Hollywood has seen an increase in observed unsheltered homelessness over this period — a trend reflected across much of Los Angeles County.</p>
+<p style="margin-top:8px;"><strong>Response:</strong> The City is strengthening service effectiveness and overall system response — expanding outreach capacity, adding local interim housing (including the Holloway Interim Housing Program), enhancing prevention services, and implementing the Coordinated Response Framework to better align providers, protocols, and data.</p>
+</div>
+</section>
+<section class="page" id="page-hcl">
+<div class="page-header">
+<div class="page-header-icon"><svg aria-hidden="true" class="oico" fill="none" focusable="false" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9" viewbox="0 0 24 24"><path d="M6.5 3.5h3l1.5 4-2 1.5a11 11 0 0 0 5 5l1.5-2 4 1.5v3a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 4.5 5.7 2 2 0 0 1 6.5 3.5z"></path></svg></div>
+<div>
+<div class="page-header-title">Homeless Concern Line</div>
+</div>
+</div>
+<div class="hero">
+      The <strong>Homeless Concern Line (323-848-6590)</strong> is West Hollywood's 24/7 non-emergency, non-law-enforcement entry point for homelessness-related outreach, behavioral health response, wellness checks, and service coordination. Residents, businesses, City staff, and individuals in need can call to request compassionate field response and connection to services. People experiencing homelessness can also call on their own behalf.
+    </div>
+<!-- HCL Filter panel: collapsible -->
+<div class="how-read"><strong>How to read this section:</strong> Some metrics count requests; others count direct contacts or call characteristics. Requests are not unique individuals.</div>
+<details class="hcl-filter-panel" style="margin-bottom:12px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 1px 6px rgba(0,30,90,.06);">
+<summary style="cursor:pointer;list-style:none;padding:11px 16px;display:flex;align-items:center;gap:10px;font-weight:700;font-size:13px;color:var(--heading);">
+<span class="inline-ico"><svg aria-hidden="true" class="oico" fill="none" focusable="false" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9" viewbox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M12 3.5v2M12 18.5v2M4.7 7l1.7 1M17.6 16l1.7 1M3.5 12h2M18.5 12h2M4.7 17l1.7-1M17.6 8l1.7-1"></path></svg></span>
+<span>Filter the data on this page</span>
+<span style="font-size:11px;color:var(--muted);font-weight:600;margin-left:auto;">Click to expand · defaults to all months &amp; reasons</span>
+</summary>
+<div style="padding:0 16px 14px;border-top:1px solid var(--line);">
+<div class="hcl-filter-card" style="border:none;box-shadow:none;padding:12px 0 4px;margin-bottom:0;">
+<span class="hcl-filter-title">Filter by month</span>
+<div aria-label="Filter Homeless Concern Line data by month" class="hcl-checklist" id="hcl-month-checklist"></div>
+<div class="hcl-filter-actions">
+<button class="hcl-reset-btn" onclick="hclResetMonths()" type="button">All months</button>
+<span id="hcl-filter-count"></span>
+</div>
+</div>
+<div class="hcl-filter-card" style="border:none;box-shadow:none;padding:8px 0 4px;margin-bottom:0;border-top:1px dashed var(--line);">
+<span class="hcl-filter-title">Filter by reason</span>
+<div aria-label="Filter Homeless Concern Line data by reason for call" class="hcl-checklist" id="hcl-reason-checklist"></div>
+<div class="hcl-filter-actions">
+<button class="hcl-reset-btn" onclick="hclResetReasons()" type="button">All reasons</button>
+<span id="hcl-reason-filter-note"></span>
+</div>
+</div>
+</div>
+</details>
+<div class="hw-filter">
+<div class="hw-filter-group"><label for="hcl-fy-select">Period</label>
+<select aria-label="Select fiscal year period for Homeless Concern Line data" id="hcl-fy-select"></select></div>
+<div class="hw-filter-readout" id="hcl-fy-readout"></div>
+</div>
+<div class="grid kpi-grid k4">
+<div class="kpi"><span class="period-eyebrow recent">Jul 2025 – Jul 2026</span><div class="k-label">Total requests</div><div class="k-value" id="hcl-kpi-total">—</div><div class="k-sub" id="hcl-kpi-period">Jul 2025–Jul 2026 · all periods</div></div>
+<div class="kpi alt"><span class="period-eyebrow recent">Jul 2025 – Jul 2026</span><div class="k-label">Daily average</div><div class="k-value" id="hcl-kpi-avg">—</div><div class="k-sub">9.2/day in Jul 2026</div></div>
+<div class="kpi alt2"><div class="k-label"><span class="glossary-term" data-tip="&lt;strong&gt;Services accepted&lt;/strong&gt;The share of people reached directly who agreed to some form of help, referral, or service connection." tabindex="0">Services accepted</span></div><div class="k-value" id="hcl-kpi-accepted">—</div><div class="k-sub">Of people reached directly</div></div>
+<div class="kpi"><span class="period-eyebrow recent">Jul 2025 – Jul 2026</span><div class="k-label"><span class="glossary-term" data-tip="&lt;strong&gt;Median response time&lt;/strong&gt;The midpoint response time: half of responses were faster and half were slower." tabindex="0">Median response time</span></div><div class="k-value" data-metric="hcl_median_response_time">—</div><div class="k-sub">Dispatch to arrival · 75% within 15 minutes</div></div>
+</div>
+<div class="card" style="margin-top:12px;">
+<h3>How it works</h3>
+<div class="flow">
+<div class="step"><div class="step-num">1</div><h4>Request received</h4><p>Anyone can call — residents, businesses, City staff, or people experiencing homelessness calling on their own behalf.</p></div>
+<div class="step"><div class="step-num">2</div><h4>Assessment &amp; dispatch</h4><p>Provider staff (HIA and the West Hollywood Care Team / Sycamores) assess the situation and route by need and time of day to the team best positioned to respond.</p></div>
+<div class="step"><div class="step-num">3</div><h4>Field response</h4><p>Teams respond, engage the individual, and provide services or referrals on site.</p></div>
+<div class="step"><div class="step-num">4</div><h4>Documented &amp; followed up</h4><p>Every interaction is logged, and follow-up care is coordinated across response teams and service partners.</p></div>
+</div>
+</div>
+<div class="grid panel-grid two" style="margin-top:12px;">
+<div class="card">
+<h3>Response teams</h3>
+<div class="note">Two teams share response duties, with defined lead roles by time of day.</div>
+<div class="takeaways" style="grid-template-columns:1fr; gap:12px;">
+<div class="takeaway"><h4>Healthcare in Action (HIA)</h4><p><strong>Day lead · 7 AM–7 PM.</strong> Street medicine, mental health support, and housing connection.</p></div>
+<div class="takeaway"><h4>West Hollywood Care Team (Sycamores)</h4><p><strong>Night lead · 7 PM–7 AM.</strong> Behavioral health response, de-escalation, and service linkage. Also serves as daytime backup for the Healthcare in Action team.</p></div>
+</div>
+</div>
+<div class="card">
+<h3>Daily request rate — by month</h3>
+<div class="note" id="hcl-monthly-note">Requests per day; July is a partial month.</div>
+<div aria-label="Bar chart of Homeless Concern Line average daily request volume by month. Loading…" class="chart compact" id="hcl-monthly" role="img"></div>
+<div class="note">Rates are shown instead of raw totals for fair comparison across full and partial months. July reflects a partial start month for data collection. Jul: Jul 16–31 (16 days).</div>
+</div>
+</div>
+<div class="grid panel-grid two" style="margin-top:12px;">
+<div class="card">
+<h3>Why people reach out</h3>
+<div class="note" id="hcl-reasons-note">Approximately 90% of requests are care-oriented.</div>
+<div id="hcl-reasons-grouped" style="margin-bottom:10px;"></div>
+<div class="rows" id="hcl-reasons"></div>
+</div>
+<div class="card">
+<h3>Outcomes</h3>
+<div class="note" id="hcl-outcomes-note">42% of requests resulted in accepted services; 68% of <span class="glossary-term" data-tip="&lt;strong&gt;direct contacts&lt;/strong&gt;Situations where a response team was able to speak with or engage the person directly." tabindex="0">direct contacts</span> accepted services. “Declined services” reflects direct contact where the offer was refused. Hover segments for definitions.</div>
+<div aria-label="Donut chart of Homeless Concern Line request outcomes including services accepted, declined, unable to locate, and outcome pending. Loading…" class="chart compact" id="hcl-outcomes" role="img"></div>
+</div>
+</div>
+<div class="grid panel-grid two" style="margin-top:12px;">
+<div class="card">
+<h3>When calls come in</h3>
+<div class="note" id="hcl-time-note">Nearly all recorded activity occurs between 6 AM and 6 PM.</div>
+<div aria-label="Bar chart of Homeless Concern Line request volume by time of day. Loading…" class="chart compact" id="hcl-time" role="img"></div>
+<div class="note">Evening activity after 6 PM is underrepresented in earlier months; Care Team logging became more consistent beginning in November.</div>
+</div>
+<div class="card">
+<h3>Calls by day of the week</h3>
+<div class="note" id="hcl-dow-note">Fridays are the busiest day in the current dataset.</div>
+<div aria-label="Bar chart of Homeless Concern Line request volume by day of week. Loading…" class="chart compact" id="hcl-dow" role="img"></div>
+</div>
+</div>
+<div class="card" style="margin-top:12px; padding:0; overflow:hidden;">
+<div style="padding:13px 15px 10px;">
+<h3>Locations of Homeless Concern Line Call Requests</h3>
+<div class="note" style="margin-bottom:0;">Density map of Concern Line requests. Green = low · Yellow = moderate · Red = high. Filtered by selections above.</div>
+<span id="hcl-heat-count" style="font-size:12px;color:var(--muted);display:block;margin-top:4px;"></span>
+</div>
+<div aria-label="Density heat map of Homeless Concern Line call locations across West Hollywood. Green areas indicate low call density; yellow moderate; red high. Use the filters above to narrow by month or reason." id="hcl-heatmap" role="img" style="height:400px;width:100%;"></div>
+</div>
+</section>
+<section class="page" id="page-housing">
+<div class="page-header">
+<div class="page-header-icon"><svg aria-hidden="true" class="oico" fill="none" focusable="false" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9" viewbox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"></path><path d="M5 9.5V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9.5"></path><path d="M9.5 21v-6h5v6"></path></svg></div>
+<div>
+<div class="page-header-title">Housing Programs</div>
+</div>
+</div>
+<div class="hero holloway-bg">
+      West Hollywood's housing programs connect people experiencing homelessness to interim shelter, ongoing case management, and permanent housing. This section tracks admissions and placements across City-funded housing programs — including long-term trend data and early results from the Holloway Interim Housing Program.
+      <br/><br/>
+      Housing outcomes often require sustained engagement to overcome documentation barriers, limited housing availability, and the complexity of each person's needs each affect timing.
+      <small>* Permanent housing placements often take many months — documentation, waitlists, inspections, landlord participation, subsidy approvals, and supportive housing availability each affect timing.</small>
+</div>
+<div class="how-read"><strong>How to read this section:</strong> Admissions, placements, bed nights, exits, and people served are different. Each card states what it counts.</div>
+<div class="grid kpi-grid k3">
+<div class="kpi"><span class="period-eyebrow cumulative">2016 to date</span><div class="k-label">People permanently housed</div><div class="k-value" data-metric="people_housed_total">—</div><div class="k-sub">Long-term housing outcomes · includes 25 placements in 2026 to date</div><div class="k-detail">72 people were housed in 2024, the highest annual total on record.</div></div>
+<div class="kpi alt"><span class="period-eyebrow cumulative">2017 to date</span><div class="k-label">Placed in interim shelter</div><div class="k-value" data-metric="interim_placements_total">—</div><div class="k-sub">Interim housing activity · includes 91 admissions in 2026 to date</div><div class="k-detail">Admissions have grown steadily as interim housing capacity expanded.</div></div>
+<div class="kpi alt2"><span class="period-eyebrow recent">Annual average · 2021–2025</span><div class="k-label">Shelter bed nights per year</div><div class="k-value" data-metric="shelter_bed_nights_year">—</div><div class="k-sub">Interim shelter capacity</div><div class="k-detail">Reflects the scale of interim shelter capacity operating across the system.</div></div>
+</div>
+<div class="period-note"><span aria-hidden="true" class="pn-icon"><svg aria-hidden="true" class="oico" fill="none" focusable="false" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9" viewbox="0 0 24 24"><rect height="15" rx="2" width="16" x="4" y="5"></rect><path d="M4 9h16"></path><path d="M8 3v3M16 3v3"></path></svg></span><div><strong>2026 data periods:</strong> Holloway Interim Housing is reported through June 30, 2026 (contract Q3). All other City-funded housing programs are reported through March 31, 2026 (mid-year). Cumulative totals above include 2026 figures through these dates.</div></div>
+<div class="grid panel-grid two" style="margin-top:12px;">
+<div class="card">
+<h3>Permanent housing placements — by year</h3>
+<div class="note">Data reflects reporting since the Homeless Initiative launched in 2017; some placements recorded from 2016 onward.* The 2026 column is contract year to date (through Jun 30, 2026) and covers a partial year, so it is not directly comparable to the full prior years.</div>
+<div aria-label="Bar chart of permanent housing placements by year from 2021 to 2026, with 2026 partial year to date. Loading…" class="chart compact" id="housing-perm" role="img"></div>
+</div>
+<div class="card">
+<h3>Interim housing admissions — by year</h3>
+<div class="note">Admissions have risen as system capacity expanded. The 2026 column is contract year to date (through Jun 30, 2026) and covers a partial year, so it is not directly comparable to the full prior years.</div>
+<div aria-label="Bar chart of interim housing admissions by year from 2021 to 2026, with 2026 partial year to date. Loading…" class="chart compact" id="housing-interim" role="img"></div>
+<div class="note">The 2026 column reflects contract year-to-date interim admissions across City-funded housing programs — Holloway (42) and Ascencia emergency shelter (49).</div>
+</div>
+</div>
+<div class="card holloway-panel" style="margin-top:12px;">
+<h3>Holloway Interim Housing Program — Contract Year 2025–26</h3>
+<div class="note">Holloway is a 20-bed, non-congregate interim housing program in West Hollywood that opened October 2025. It serves residents experiencing chronic homelessness and living with a disability, and is one part of the City's broader interim housing portfolio shown above.</div>
+<div class="subset-note"><span aria-hidden="true" class="subset-arrow"><svg aria-hidden="true" class="oico" fill="none" focusable="false" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9" viewbox="0 0 24 24"><path d="M12 19V6"></path><path d="M6.5 11.5 12 6l5.5 5.5"></path></svg></span><div><strong>Program-level detail.</strong> Holloway's admissions and placements are already counted in the 2026 columns above. This panel breaks that activity out for Holloway alone.</div></div>
+<div class="how-read"><strong>Reading early program results:</strong> A permanent housing placement typically takes 9–12 months. The participant needs identifying documents (birth certificate, State ID, Social Security card), approval for a <span class="glossary-term" data-tip="&lt;strong&gt;Voucher&lt;/strong&gt;A subsidized housing payment that covers part of a household's rent, issued by a housing authority. Units rented with a voucher must pass an inspection before move-in." tabindex="0">voucher</span> or other subsidized housing payment, a landlord willing to rent to someone who has been unhoused, and an available unit. So placements are not the only measure of progress: also watch whether beds stay occupied, participants stay engaged, people stabilize after moving indoors, benefits and income are secured, and the housing pipeline grows.<br/><br/><strong>What the quarter filter controls:</strong> The filter updates the four metrics and the occupancy chart directly below it. Everything further down — program flow, exits, length of stay, engagement, demographics — is year-to-date and does not change with the filter.</div>
+<div class="hw-filter">
+<div class="hw-filter-group">
+<label for="hw-year">Contract year</label>
+<select id="hw-year">
+<option selected="" value="2025-26">2025–26 (Oct–Sep)</option>
+</select>
+</div>
+<div class="hw-filter-group">
+<label for="hw-quarter">Quarter</label>
+<select id="hw-quarter">
+<option selected="" value="ytd">Year to date</option>
+<option value="q1">Q1 · Oct–Dec 2025</option>
+<option value="q2">Q2 · Jan–Mar 2026</option>
+<option value="q3">Q3 · Apr–Jun 2026</option>
+</select>
+</div>
+<div class="hw-filter-readout" id="hw-readout">Showing year to date · Oct 1, 2025 – Jun 30, 2026</div>
+</div>
+<div class="grid kpi-grid k4">
+<div class="kpi"><span class="period-eyebrow recent hw-eyebrow">Year to date · through Jun 30, 2026</span><div class="k-label" id="hw-served-label">Individuals served</div><div class="k-value" data-raw="42" id="hw-served">—</div><div class="k-sub" id="hw-served-sub">Unduplicated individuals served year to date</div></div>
+<div class="kpi alt"><span class="period-eyebrow recent hw-eyebrow">Year to date · through Jun 30, 2026</span><div class="k-label">Occupancy rate</div><div class="k-value" data-raw="90.1%" id="hw-occ">—</div><div class="k-sub" id="hw-occ-sub">Meets the 90% annual goal</div></div>
+<div class="kpi alt2"><span class="period-eyebrow recent hw-eyebrow">Year to date · through Jun 30, 2026</span><div class="k-label">Exits to permanent housing</div><div class="k-value" data-raw="6" id="hw-perm">—</div><div class="k-sub" id="hw-perm-sub">5 additional pending · goal 12 / year</div></div>
+<div class="kpi"><span class="period-eyebrow recent hw-eyebrow">Year to date · through Jun 30, 2026</span><div class="k-label">Supportive services participation</div><div class="k-value" data-raw="81.1%" id="hw-part">—</div><div class="k-sub" id="hw-part-sub">Average of quarterly rates · goal 65%</div></div>
+</div>
+<div style="margin-top:8px;font-size:11.5px;color:var(--muted);font-style:italic;line-height:1.5;">Point-in-time snapshot (not affected by the quarter filter): as of June 30, 2026, Holloway was at full capacity with 20 of 20 beds occupied and a waitlist of 3 eligible West Hollywood community members.</div>
+<!-- Occupancy & Utilization -->
+<div class="holloway-subcard" style="margin-top:12px;">
+<h4>Occupancy &amp; utilization</h4>
+<p id="hw-occ-narrative">After a ramp-up during its first quarter, Holloway has operated at near full capacity, bringing year-to-date occupancy to 90.1% — meeting the 90% annual goal.</p>
+<!-- Target label row -->
+<div style="position:relative;margin-top:14px;padding-right:0;">
+<div style="position:absolute;left:90%;top:0;bottom:0;display:flex;flex-direction:column;align-items:center;pointer-events:none;z-index:2;">
+<div style="width:1px;height:100%;background:var(--blue3);opacity:0.35;border-radius:1px;"></div>
+</div>
+<div style="text-align:right;padding-right:calc(10% - 2px);margin-bottom:6px;">
+<span style="font-size:10px;font-weight:700;color:var(--blue3);opacity:0.7;">90% target</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;">
+<!-- Q1 -->
+<div id="occ-q1">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+<span style="font-size:12px;font-weight:800;color:var(--heading);">Q1 · Oct–Dec 2025</span>
+<span style="display:inline-flex;align-items:center;gap:6px;">
+<span style="font-size:12px;font-weight:800;color:var(--blue);">80.6%</span>
+<span class="status-chip below-target" title="The program was still filling beds in its first quarter of operation.">Ramp-up — first quarter of operation</span>
+</span>
+</div>
+<div style="height:20px;border-radius:999px;background:#edf3fa;overflow:hidden;">
+<div style="height:100%;width:80.6%;border-radius:999px;background:linear-gradient(90deg,var(--blue),var(--blue3));"></div>
+</div>
+<div style="margin-top:4px;font-size:11px;color:var(--muted);">1,402 of 1,740 bed nights used</div>
+</div>
+<!-- Q2 -->
+<div id="occ-q2">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+<span style="font-size:12px;font-weight:800;color:var(--heading);">Q2 · Jan–Mar 2026</span>
+<span style="display:inline-flex;align-items:center;gap:6px;">
+<span style="font-size:12px;font-weight:800;color:var(--blue);">95.0%</span>
+<span class="status-chip on-track">Above target</span>
+</span>
+</div>
+<div style="height:20px;border-radius:999px;background:#edf3fa;overflow:hidden;">
+<div style="height:100%;width:95%;border-radius:999px;background:linear-gradient(90deg,var(--blue),var(--blue2));"></div>
+</div>
+<div style="margin-top:4px;font-size:11px;color:var(--muted);">1,710 of 1,800 bed nights used</div>
+</div>
+<!-- Q3 -->
+<div id="occ-q3">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+<span style="font-size:12px;font-weight:800;color:var(--heading);">Q3 · Apr–Jun 2026</span>
+<span style="display:inline-flex;align-items:center;gap:6px;">
+<span style="font-size:12px;font-weight:800;color:var(--blue);">94.5%</span>
+<span class="status-chip on-track">Above target</span>
+</span>
+</div>
+<div style="height:20px;border-radius:999px;background:#edf3fa;overflow:hidden;">
+<div style="height:100%;width:94.5%;border-radius:999px;background:linear-gradient(90deg,var(--blue),var(--blue2));"></div>
+</div>
+<div style="margin-top:4px;font-size:11px;color:var(--muted);">1,720 of 1,820 bed nights used</div>
+</div>
+</div>
+</div>
+<div style="margin-top:10px;font-size:11px;color:var(--muted);font-style:italic;line-height:1.45;">Occupancy calculated using total available bed nights per quarter. Target set at 90% to allow for turnover, client intake review, and related processes.</div>
+</div>
+<div class="hw-section-divider"><span>Contract year-to-date · not filtered by quarter</span></div>
+<div class="holloway-split">
+<div class="holloway-subcard">
+<h4>Program flow</h4>
+<p>Holloway serves as a stabilization point between street outreach and permanent housing, supporting individuals through documentation, benefits access, and housing navigation.</p>
+<div class="mini-flow">
+<div class="mini-flow-item"><strong>42</strong><span>Entered (YTD)</span></div>
+<div class="mini-flow-item"><strong>20</strong><span>Currently enrolled</span></div>
+<div class="mini-flow-item"><strong>22</strong><span>Total <span class="glossary-term" data-tip="&lt;strong&gt;exits&lt;/strong&gt;When someone leaves a program, whether for permanent housing, another program, or another destination." tabindex="0">exits</span><br/><span style="font-size:11px;color:var(--muted);font-weight:600;">6 permanent · 16 non-permanent</span></span></div>
+</div>
+<div style="margin-top:10px;font-size:12px;font-weight:700;color:var(--heading);">Progress toward 12 annual placements</div>
+<div class="progress-shell">
+<div aria-label="Permanent housing progress toward annual goal" class="progress-track" style="display:flex;">
+<div class="progress-fill" style="width:50%;border-radius:999px 0 0 999px;"></div>
+<div class="progress-fill pending" style="width:41.7%;border-radius:0 999px 999px 0;margin-left:2px;"></div>
+</div>
+<div class="progress-caption"><span><strong>Permanent housing:</strong> 6 confirmed | 5 in progress</span><span>Annual goal: 12</span></div>
+</div>
+<div class="holloway-insight">Of the six permanent placements to date, one occurred in Q1 and five in Q3 — half of the annual goal of 12, with 5 more <span class="glossary-term" data-tip="&lt;strong&gt;Pending placement&lt;/strong&gt;A unit has been identified for the participant, but an inspection and/or funding approval must be completed before they can move in." tabindex="0">pending</span>. The program has maintained full occupancy and a waitlist throughout. <em>Pending</em> means a unit has been identified but an inspection or funding approval is still outstanding.</div>
+</div>
+<div class="holloway-subcard">
+<h4>Where people go after leaving Holloway <span class="n-callout">22 exits year to date</span></h4>
+<p style="font-size:13px;color:var(--heading);font-weight:600;margin:6px 0 8px;">Of the 22 people who left the program year to date: <span style="color:var(--blue);font-weight:800;">6 exited to permanent housing</span> and 16 exited to non-permanent destinations — 5 to temporary or interim housing, 2 to family, friends, or a partner (no lease), and 9 unknown or left program.</p>
+<p>Most non-permanent exits reflect movement to another temporary setting rather than a return to the street. The permanent number is smaller because those placements take 9–12 months — see <strong>Reading early program results</strong> above.</p>
+<div class="holloway-bars">
+<div class="holloway-bar-row">
+<div class="holloway-bar-label">Permanent housing</div>
+<div class="holloway-bar-track"><div class="holloway-bar-fill" style="width:27%; background:var(--blue2);"></div></div>
+<div class="holloway-bar-value">6</div>
+</div>
+<div class="holloway-bar-row">
+<div class="holloway-bar-label">Temporary or interim housing</div>
+<div class="holloway-bar-track"><div class="holloway-bar-fill" style="width:23%; background:var(--blue);"></div></div>
+<div class="holloway-bar-value">5</div>
+</div>
+<div class="holloway-bar-row">
+<div class="holloway-bar-label">Family, friends, or partner (no lease)</div>
+<div class="holloway-bar-track"><div class="holloway-bar-fill" style="width:9%; background:var(--blue3);"></div></div>
+<div class="holloway-bar-value">2</div>
+</div>
+<div class="holloway-bar-row">
+<div class="holloway-bar-label">Unknown or left program</div>
+<div class="holloway-bar-track"><div class="holloway-bar-fill" style="width:41%; background:var(--blue4);"></div></div>
+<div class="holloway-bar-value">9</div>
+</div>
+</div>
+<div class="holloway-insight">Destination coding is complete through Q3. The City and Ascencia review these patterns each quarter to see where participants go and where follow-up support falls short.</div>
+</div>
+</div>
+<div class="holloway-split" style="margin-top:12px;">
+<div class="holloway-subcard">
+<h4><span class="glossary-term" data-tip="&lt;strong&gt;Length of stay&lt;/strong&gt;The amount of time a person remains enrolled or housed in a program." tabindex="0">Length of stay</span> </h4>
+<div class="holloway-topline" style="grid-template-columns:repeat(2,1fr);margin-top:10px;">
+<div class="holloway-mini">
+<div class="mini-label">Permanent housing exits <span class="n-callout">6 participants year to date</span></div>
+<div class="mini-value">144 days</div>
+<div class="mini-sub">Average stay for participants who remained engaged and exited to permanent housing</div>
+</div>
+<div class="holloway-mini">
+<div class="mini-label">All other exits <span class="n-callout">16 participants year to date</span></div>
+<div class="mini-value">54 days</div>
+<div class="mini-sub">Average stay across non-permanent exits, which happen for a range of reasons — see <strong>About &amp; Methods</strong></div>
+</div>
+</div>
+<!-- Exit type breakdown -->
+<div style="margin-top:12px;">
+<div class="holloway-insight"><strong>What these figures show:</strong> Exits to permanent housing average about 144 days, reflecting the time needed to secure a unit; non-permanent exits average 54 days. Both rest on small numbers and will shift as the program matures.</div>
+</div>
+</div>
+<div class="holloway-subcard">
+<h4>Engagement and stability</h4>
+<p>Supportive services participation increased as the program stabilized and remained above the annual goal.</p>
+<div class="holloway-topline">
+<div class="holloway-mini"><div class="mini-label">Q1 participation</div><div class="mini-value">66.7%</div><div class="mini-sub">16 of 24 served · initial quarter</div></div>
+<div class="holloway-mini"><div class="mini-label">Q2 participation</div><div class="mini-value">89.7%</div><div class="mini-sub">26 of 29 served · above 65% goal</div></div>
+<div class="holloway-mini"><div class="mini-label">Q3 participation</div><div class="mini-value">87.0%</div><div class="mini-sub">26 of 30 served · above 65% goal</div></div>
+</div>
+<div class="holloway-mini" style="margin-top:10px;"><div class="mini-label">Income / benefits (YTD)</div><div class="mini-value">8 of 42 individuals served</div><div class="mini-sub">Increased income or gained new public benefits year to date.</div></div>
+</div>
+</div>
+<div class="card" style="margin-top:12px;">
+<div class="holloway-subcard">
+<h4>Participant profile <span class="n-callout">42 individuals served year to date</span></h4>
+<p>The population served reflects the demographics of the chronically unhoused population in West Hollywood, according to the City’s demographic survey: older, predominantly male, and disproportionately <span class="glossary-term" data-tip="&lt;strong&gt;BIPOC&lt;/strong&gt;A broad term meaning Black, Indigenous, and People of Color." tabindex="0">BIPOC</span>. Half are age 50 or older; all meet eligibility related to chronic homelessness and disability.</p>
+<div class="small-n-banner">All percentages below are based on 42 individuals served year to date. Because the population served is relatively small, small percentage differences may reflect only one or two individuals. The 10 participants who entered the program after the close of Q2 are not yet reflected in these demographic breakdowns.</div>
+<div class="demographic-grid">
+<div class="demographic-card">
+<h4>Age</h4>
+<div class="demo-row"><span class="demo-label">18–39</span><span class="demo-track"><span class="demo-fill" style="display:block;width:19%;"></span></span><span class="demo-value">19%</span></div>
+<div class="demo-row"><span class="demo-label">40–49</span><span class="demo-track"><span class="demo-fill" style="display:block;width:26%;"></span></span><span class="demo-value">26%</span></div>
+<div class="demo-row"><span class="demo-label">50–61</span><span class="demo-track"><span class="demo-fill" style="display:block;width:29%;"></span></span><span class="demo-value">29%</span></div>
+<div class="demo-row"><span class="demo-label">62+</span><span class="demo-track"><span class="demo-fill" style="display:block;width:26%;"></span></span><span class="demo-value">26%</span></div>
+</div>
+<div class="demographic-card">
+<h4>Gender</h4>
+<div class="demo-row"><span class="demo-label">Women</span><span class="demo-track"><span class="demo-fill" style="display:block;width:36%;"></span></span><span class="demo-value">36%</span></div>
+<div class="demo-row"><span class="demo-label">Men</span><span class="demo-track"><span class="demo-fill" style="display:block;width:64%;"></span></span><span class="demo-value">64%</span></div>
+</div>
+<div class="demographic-card">
+<h4>Race / ethnicity</h4>
+<div class="demo-row"><span class="demo-label">White</span><span class="demo-track"><span class="demo-fill" style="display:block;width:43%;"></span></span><span class="demo-value">43%</span></div>
+<div class="demo-row"><span class="demo-label">Black</span><span class="demo-track"><span class="demo-fill" style="display:block;width:31%;"></span></span><span class="demo-value">31%</span></div>
+<div class="demo-row"><span class="demo-label">Hispanic</span><span class="demo-track"><span class="demo-fill" style="display:block;width:21%;"></span></span><span class="demo-value">21%</span></div>
+<div class="demo-row" style="opacity:0.92;"><span class="demo-label" style="font-size:11.5px;">Asian / Pacific Islander</span><span class="demo-track"><span class="demo-fill" style="display:block;width:2%;background:var(--blue4);"></span></span><span class="demo-value" style="font-size:11.5px;">2%</span></div>
+<div class="demo-row" style="opacity:0.92;"><span class="demo-label glossary-term" data-tip="&lt;strong&gt;MENA&lt;/strong&gt;Middle Eastern and North African — a demographic category used in race/ethnicity reporting to identify community members with origins in the Middle East or North Africa." style="font-size:11.5px;" tabindex="0">MENA</span><span class="demo-track"><span class="demo-fill" style="display:block;width:2%;background:var(--blue4);"></span></span><span class="demo-value" style="font-size:11.5px;">2%</span></div>
+</div>
+</div>
+<div class="holloway-insight">Demographics are tracked to support program planning and equity review — specifically to monitor whether the population served at Holloway aligns with the broader population experiencing chronic homelessness in West Hollywood.</div>
+</div>
+</div>
+<div class="banner" style="margin-top:12px; border-left-color:var(--blue2);">
+<p><strong>System context:</strong> Permanent housing placements have grown steadily and reached a record high in 2024. Limited regional availability of affordable and supportive housing units remains the primary constraint on faster outcomes — including for Holloway participants.</p>
+</div>
+</div></section>
+<section class="page" id="page-prevention">
+<div class="page-header">
+<div class="page-header-icon"><svg aria-hidden="true" class="oico" fill="none" focusable="false" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9" viewbox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"></path></svg></div>
+<div>
+<div class="page-header-title">Homelessness Prevention</div>
+</div>
+</div>
+<div class="hero">
+      Prevention programs help residents remain housed through rental assistance, legal support, and other housing stability services. This section summarizes activity across the City’s prevention programs — both City-funded and County Measure A funds the City administers — focused on reducing inflow into homelessness.
+    </div>
+<div class="prevention-overview-grid">
+<div class="prevention-card">
+<h4>Ongoing Rental Assistance (City-funded)</h4>
+<p>The City has funded rental assistance since 2009 for older adults (55+), people living with HIV, and community members at risk of losing housing — the foundation of its prevention work. This is a separate program from the newer, County-funded Measure A emergency assistance shown further down.</p>
+</div>
+<div class="prevention-card">
+<h4>Eviction Defense &amp; Legal Support</h4>
+<p>Free legal help to fight evictions and protect tenant rights, reducing displacement and keeping households stably housed.</p>
+</div>
+<div class="prevention-card">
+<h4>Housing Stability Services</h4>
+<p>Supporting households before a crisis becomes homelessness.</p>
+</div>
+</div>
+<div class="how-read"><strong>How to read this section:</strong> Prevention metrics describe dollars, households, or services. Each card states what it counts.</div>
+<div class="grid kpi-grid k3">
+<div class="kpi"><span class="period-eyebrow cumulative">2018 to date</span><div class="k-label">Rental assistance disbursed</div><div class="k-value" data-metric="rental_assistance_disbursed_total">—</div><div class="k-sub">City-funded program · excludes Measure A</div></div>
+<div class="kpi alt"><span class="period-eyebrow cumulative">2017 to date</span><div class="k-label">Households supported</div><div class="k-value" data-metric="rental_households_total">—</div><div class="k-sub">City-funded program · excludes Measure A</div></div>
+<div class="kpi alt2"><span class="period-eyebrow recent">Year to date · through Mar 31, 2026</span><div class="k-label">Disbursed in 2026</div><div class="k-value" data-metric="rental_assistance_2026_disbursed" data-raw="$186,857">—</div><div class="k-sub">City-funded program · excludes Measure A</div></div>
+</div>
+<div class="grid panel-grid two" style="margin-top:12px;">
+<div class="card">
+<h3>Rental assistance (City-funded) — households served by year</h3>
+<div class="note">The 2021 spike reflects expanded COVID-19 emergency rental assistance. Activity has since returned to a steady annual baseline. The 2026 bar is year to date through March 2026 and covers a partial year, so it is not directly comparable to the full prior years. These bars reflect the ongoing program only; the newer Measure A program is reported separately below.</div>
+<div class="how-read" style="margin-top:10px;"><strong>Program history:</strong> West Hollywood has provided rental assistance for decades. The program originated with Alliance for Housing and Healing (now APLA Health) serving residents living with HIV/AIDS. In 2009 the City expanded into two complementary tracks — rental assistance for older adults (55+) through APLA Health, and assistance for younger residents at risk of housing loss through NCJW|LA. These two tracks continue to anchor the prevention portfolio today.</div>
+<div aria-label="Bar chart of rental assistance households served by year from 2021 to 2026, with 2026 year to date through March (partial). Loading…" class="chart compact" id="prevention-rental" role="img"></div>
+</div>
+<div class="card">
+<h3>What prevention services cover</h3>
+<div class="takeaways" style="grid-template-columns:1fr; gap:10px;">
+<div class="takeaway"><h4>Ongoing rental assistance (City-funded)</h4><p>Two complementary tracks anchor the ongoing program: one for older adults (55+) and residents living with HIV (APLA Health), and one for the general adult population at risk of housing loss (NCJW|LA). A separate Measure A emergency program is shown below.</p></div>
+<div class="takeaway"><h4>Eviction defense &amp; tenant rights</h4><p>Free legal help to fight evictions and protect tenant rights, reducing displacement and keeping households stably housed.</p></div>
+<div class="takeaway"><h4>Health &amp; recovery support</h4><p>Mental health support, substance use recovery, benefits counseling, and HIV-related services — recognizing the deep historical connection between West Hollywood’s prevention work and its response to HIV/AIDS.</p></div>
+<div class="takeaway"><h4>Culturally affirming services</h4><p>Programs serving communities at disproportionate risk of housing loss — including LGBTQ+ residents, transgender community members, and people living with HIV/AIDS — reflect the City’s commitment to reaching populations that face historical barriers in housing markets.</p></div>
+</div>
+</div>
+</div>
+<div class="card" style="margin-top:12px;">
+<div class="holloway-subcard">
+<h4>Emergency Rental Assistance — Measure A <span class="n-callout">New program</span></h4>
+<p>A newer, separate stream of emergency rental assistance funded through West Hollywood’s allocation of Los Angeles County’s <span class="glossary-term" data-tip="&lt;strong&gt;Measure A / SB 679&lt;/strong&gt;A countywide funding source administered by the Los Angeles County Affordable Housing Solutions Agency (LACAHSA) supporting renter protection and homelessness prevention." tabindex="0">Measure A</span> renter-protection and homelessness-prevention funds. It targets residents who are currently housed but at immediate risk of losing their housing — households living on a low income who have been hit by an emergency such as a job or income loss or unexpected medical bills. Assistance is short-term and paid directly to landlords.</p>
+<div class="how-read" style="margin-top:10px;"><strong>How this differs from the programs above:</strong> The Measure A expansion carries its own funding source, eligibility, and reporting, and prioritizes higher-barrier cases — households carrying large <span class="glossary-term" data-tip="&lt;strong&gt;Arrears&lt;/strong&gt;Rent that a household already owes to a landlord and has not yet paid." tabindex="0">arrears</span>, or households that did not qualify for other assistance programs.</div>
+<div class="note" style="margin-top:10px;">First quarter of service (April–June 2026). The program launched in April 2026.</div>
+<div class="grid kpi-grid k3" style="margin-top:10px;">
+<div class="kpi"><span class="period-eyebrow recent">First quarter · Apr–Jun 2026</span><div class="k-label">Households served</div><div class="k-value" data-metric="measure_a_households_served">—</div><div class="k-sub">Measure A program only</div></div>
+<div class="kpi alt"><span class="period-eyebrow recent">First quarter · Apr–Jun 2026</span><div class="k-label">Total disbursed</div><div class="k-value" data-metric="measure_a_total_disbursed">—</div><div class="k-sub">Measure A program only · paid directly to landlords</div></div>
+<div class="kpi alt2"><span class="period-eyebrow recent">First quarter · Apr–Jun 2026</span><div class="k-label">Average per household</div><div class="k-value" data-metric="measure_a_average_household">—</div><div class="k-sub">Measure A program only · median $5,478</div></div>
+</div>
+<div class="holloway-subcard" style="margin-top:12px;">
+<h4>What the assistance covered</h4>
+<div class="holloway-bars">
+<div class="holloway-bar-row"><div class="holloway-bar-label">Rental arrears</div><div class="holloway-bar-track"><div class="holloway-bar-fill" style="width:94%;background:var(--blue2);"></div></div><div class="holloway-bar-value">$54,901</div></div>
+<div class="holloway-bar-row"><div class="holloway-bar-label">Forward rent</div><div class="holloway-bar-track"><div class="holloway-bar-fill" style="width:6%;background:var(--blue4);"></div></div><div class="holloway-bar-value">$3,696</div></div>
+</div>
+<p style="font-size:12.5px;color:#334a67;margin:10px 0 0;line-height:1.5;">Nearly all assistance went to clearing back rent owed to the landlord — 9 of 10 households carried arrears at intake.</p>
+</div>
+<details class="rphp-demographics" style="margin-top:12px;background:#fff;border:1px solid var(--line);border-radius:10px;">
+<summary style="cursor:pointer;list-style:none;padding:11px 14px;display:flex;align-items:center;gap:8px;font-weight:700;font-size:13px;color:var(--heading);">
+<span style="flex:1;">Who was served — participant demographics</span>
+<span style="font-size:11px;color:var(--muted);font-weight:600;">10 households · tap to expand</span>
+</summary>
+<div style="padding:0 14px 14px;">
+<div class="note" style="margin-top:0;">These figures reflect the first 10 households served and are published to establish consistent reporting from the start of the program. With numbers this small, they should be read as an early sample rather than a stable pattern.</div>
+<div class="demographic-grid" style="margin-top:10px;grid-template-columns:repeat(4,1fr);">
+<div class="demographic-card"><h4>Age</h4>
+<div class="demo-row"><span class="demo-label">Under 45</span><span class="demo-track"><span class="demo-fill" style="display:block;width:100%;"></span></span><span class="demo-value">5</span></div>
+<div class="demo-row"><span class="demo-label">45–61</span><span class="demo-track"><span class="demo-fill" style="display:block;width:60%;"></span></span><span class="demo-value">3</span></div>
+<div class="demo-row"><span class="demo-label">62 or older</span><span class="demo-track"><span class="demo-fill" style="display:block;width:40%;"></span></span><span class="demo-value">2</span></div>
+</div>
+<div class="demographic-card"><h4>Gender</h4>
+<div class="demo-row"><span class="demo-label">Men</span><span class="demo-track"><span class="demo-fill" style="display:block;width:100%;"></span></span><span class="demo-value">6</span></div>
+<div class="demo-row"><span class="demo-label">Women</span><span class="demo-track"><span class="demo-fill" style="display:block;width:50%;"></span></span><span class="demo-value">3</span></div>
+<div class="demo-row"><span class="demo-label">Nonbinary</span><span class="demo-track"><span class="demo-fill" style="display:block;width:17%;background:var(--blue3);"></span></span><span class="demo-value">1</span></div>
+</div>
+<div class="demographic-card"><h4>Race / ethnicity</h4>
+<div class="demo-row"><span class="demo-label">White</span><span class="demo-track"><span class="demo-fill" style="display:block;width:100%;"></span></span><span class="demo-value">5</span></div>
+<div class="demo-row"><span class="demo-label">Black</span><span class="demo-track"><span class="demo-fill" style="display:block;width:80%;"></span></span><span class="demo-value">4</span></div>
+<div class="demo-row"><span class="demo-label">Declined to state</span><span class="demo-track"><span class="demo-fill" style="display:block;width:20%;background:var(--blue4);"></span></span><span class="demo-value">1</span></div>
+</div>
+<div class="demographic-card"><h4>Household</h4>
+<div class="demo-row"><span class="demo-label">Single adult</span><span class="demo-track"><span class="demo-fill" style="display:block;width:100%;"></span></span><span class="demo-value">9</span></div>
+<div class="demo-row"><span class="demo-label">Adult couple</span><span class="demo-track"><span class="demo-fill" style="display:block;width:11%;background:var(--blue3);"></span></span><span class="demo-value">1</span></div>
+</div>
+</div>
+</div>
+</details>
+<div class="holloway-insight" style="margin-top:12px;"><strong>Longer-term outcomes:</strong> Staff built new follow-up measures into this program from the outset. It tracks housing stability after assistance ends, including whether households remain housed 90 days later and whether rental arrears were resolved without eviction. Because the program is new, most households have not yet reached that follow-up point; those outcomes will be added here as the data matures.</div>
+</div>
+</div>
+<div class="banner" style="margin-top:12px; border-left-color:var(--blue2);">
+<h3 style="margin:0 0 8px;font-size:14px;color:var(--heading);">Why prevention matters</h3>
+<p style="margin:0;">Prevention is most effective before a crisis occurs — reducing displacement, lowering the cost of downstream response, and supporting long-term housing stability. West Hollywood’s programs prioritize residents at highest risk: older adults managing fixed incomes and rising rents, and historically marginalized communities. The <a href="https://www.urban.org/urban-wire/how-should-communities-target-scarce-rental-assistance-resources" rel="noopener noreferrer" style="color:var(--blue);font-weight:600;border-bottom:1px dotted var(--blue);text-decoration:none;" target="_blank">Urban Institute</a> finds that rental assistance works best when targeted to households with the lowest incomes and highest displacement risk. <a href="https://www.brookings.edu/articles/despite-a-national-spike-in-homelessness-some-us-regions-are-finding-solutions/" rel="noopener noreferrer" style="color:var(--blue);font-weight:600;border-bottom:1px dotted var(--blue);text-decoration:none;" target="_blank">Brookings</a> documents that regions reducing homelessness pair upstream prevention with housing-supply policy. And <a href="https://www.rand.org/pubs/research_briefs/RB10000.html" rel="noopener noreferrer" style="color:var(--blue);font-weight:600;border-bottom:1px dotted var(--blue);text-decoration:none;" target="_blank">RAND</a>’s evaluation of LA County’s Housing for Health shows that integrated housing and services models meaningfully improve long-term retention. West Hollywood’s prevention programs are designed with this evidence in mind. Local data does not yet track long-term housing retention for individual households — an area for future evaluation.</p>
+</div>
+</section>
+<section class="page" id="page-about">
+<div class="page-header">
+<div class="page-header-icon"><svg aria-hidden="true" class="oico" fill="none" focusable="false" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.9" viewbox="0 0 24 24"><circle cx="12" cy="12" r="8.5"></circle><path d="M12 11v5"></path><path d="M12 7.6v.01"></path></svg></div>
+<div>
+<div class="page-header-title">About &amp; Methods</div>
+</div>
+</div>
+<div class="about-intro">
+<p class="about-intro-lead">This page is the reference for everything behind the dashboard.</p>
+<p class="about-intro-body">Where each number comes from, what it counts, what it does not, when it was last updated, and how to reach us with questions or corrections. Each section below is collapsible — click any heading to open it.</p>
+</div>
+<div class="about-outline">
+<details class="about-section about-section--scope" open="">
+<summary>
+<span class="about-num">01</span>
+<span class="about-titleblock">
+<span class="about-title">Scope</span>
+<span class="about-hint">What this dashboard is &amp; is not</span>
+</span>
+<span class="about-toggle"></span>
+</summary>
+<div class="about-body">
+<div class="scope-split">
+<div class="scope-col scope-col--is">
+<h4 class="scope-heading scope-heading--is">What this dashboard <em>is</em></h4>
+<ul class="scope-list">
+<li>A summary of <strong>City-funded</strong> homelessness response and prevention programs operating in West Hollywood.</li>
+<li>An <strong>operational and outcomes view</strong>: outreach, behavioral health response, the Homeless Concern Line, interim housing (including Holloway), permanent housing placement, and prevention.</li>
+<li>A <strong>public-facing transparency tool</strong> tied to the Coordinated Response Framework (CRF).</li>
+<li>A <strong>starting point</strong> for residents, Commissioners, Councilmembers, and stakeholders to understand what the City funds and what outcomes are being tracked.</li>
+</ul>
+</div>
+<div class="scope-col scope-col--isnot">
+<h4 class="scope-heading scope-heading--isnot">What this dashboard <em>is not</em></h4>
+<ul class="scope-list">
+<li><strong>Not every person in West Hollywood experiencing homelessness</strong> — only people observed during field counts or engaged through City-funded programs.</li>
+<li><strong>Not every homelessness service in West Hollywood</strong> — County, regional, faith-based, mutual aid, and private services that operate locally are not reflected here.</li>
+<li><strong>Not real-time tracking</strong> — data is summarized periodically, not updated live, and it does not follow individual identities.</li>
+<li><strong>Not a directory of services</strong> — for help, residents should call the Homeless Concern Line at <strong>323-848-6590</strong> or 211.</li>
+</ul>
+</div>
+</div>
+</div>
+</details>
+<details class="about-section about-section--sources">
+<summary>
+<span class="about-num">02</span>
+<span class="about-titleblock">
+<span class="about-title">Data sources by section</span>
+<span class="about-hint">Where each metric comes from</span>
+</span>
+<span class="about-toggle"></span>
+</summary>
+<div class="about-body">
+<dl class="about-deflist">
+<dt><span class="dt-bullet"></span>Unsheltered Counts &amp; Locations</dt>
+<dd>
+<div class="dd-grid">
+<span class="dd-label">Source</span><span>Field outreach observations during PIT-related observation periods, conducted by Ascencia through Sep 2025 and by Healthcare in Action beginning in 2026.</span>
+<span class="dd-label">Period</span><span>Monthly Jan–Sep 2025; long-term trend 2017–2026 (2026 covers Q1 and Q2 only); quarterly from 2026 (Q1 counted Jan 15, 2026; Q2 counted Apr 23, 2026).</span>
+<span class="dd-label">Cadence</span><span>Monthly through Sep 2025; quarterly beginning 2026. Because cadence and provider changed, quarterly counts are not directly comparable to the monthly series.</span>
+<span class="dd-label dd-label--note">Note</span><span class="dd-note">The Ascencia contract ended September 2025; subsequent cadence will not be directly comparable to prior monthly data.</span>
+</div>
+</dd>
+<dt><span class="dt-bullet"></span>Client Demographics</dt>
+<dd>
+<div class="dd-grid">
+<span class="dd-label">Source</span><span>City of West Hollywood Social Services Division quarterly program report submitted by Ascencia, the City’s lead homeless outreach provider for that contract year (Q4 report, contract year 2024–25). Other City-funded providers also conduct outreach; this report covers the lead provider only.</span>
+<span class="dd-label">Period</span><span>Contract year October 1, 2024 – September 30, 2025. This does not align to the City fiscal year (Jul 1–Jun 30) used for Homeless Concern Line reporting.</span>
+<span class="dd-label">Counts</span><span>146 new, unduplicated West Hollywood community members. “New, unduplicated” means each person is counted once within the contract year. People served by outreach are a different group from Concern Line callers and from Point-in-Time counts.</span>
+<span class="dd-label">Cadence</span><span>Quarterly during the contract year; this reflects the completed year. The Ascencia contract ended September 2025. Demographics for 2025–26 from Healthcare in Action, the current lead outreach provider, are still being compiled.</span>
+<span class="dd-label dd-label--note">Note</span><span class="dd-note">Any demographic category with fewer than 11 people is combined with others to reduce re-identification risk. Veteran status and disability are not collected in this report. The provider records race and ethnicity together across roughly twenty combined categories; for publication these are grouped into Latino or Hispanic (any race), White, Black or African American, and all other or multiple races. Quarterly provider reports should not be added together to produce an annual figure: a person served in more than one quarter can appear in more than one quarterly count. The 146 figure is the provider’s annual unduplicated total, which matches the annual goal reported on its scope-of-services page.</span>
+</div>
+</dd>
+<dt><span class="dt-bullet"></span>Homeless Concern Line</dt>
+<dd>
+<div class="dd-grid">
+<span class="dd-label">Source</span><span>City operational dispatch and field response logs (HIA and West Hollywood Care Team / Sycamores).</span>
+<span class="dd-label">Period</span><span>Jul 2025–Jul 2026, grouped by City fiscal year (Jul 1–Jun 30). FY 2025–26 complete (1,848 requests); FY 2026–27 in progress (Jul 2026, 286 requests). July 2025 is partial (Jul 16–31).</span>
+<span class="dd-label">Cadence</span><span>Refreshed for each public release.</span>
+<span class="dd-label dd-label--note">Note</span><span class="dd-note">Evening activity after 6 PM is underrepresented before November 2025, when Care Team logging became consistent.</span>
+</div>
+</dd>
+<dt><span class="dt-bullet"></span>Housing &amp; Holloway</dt>
+<dd>
+<div class="dd-grid">
+<span class="dd-label">Source</span><span>Contracted provider quarterly reports and City tracking. Permanent housing placements combine reporting from Holloway, Ascencia Glendale, the LGBT Center youth program, and the LGBT Center seniors program. Interim admissions combine Holloway and Ascencia emergency shelter.</span>
+<span class="dd-label">Period</span><span>Permanent housing 2016–Present; interim admissions 2017–Present; bed nights 2021–2025; Holloway contract year Q1–Q3 covers Oct 2025–Jun 2026. For 2026, Holloway figures run through Jun 30, 2026 and all other housing programs through Mar 31, 2026; cumulative totals include 2026 activity through those dates.</span>
+<span class="dd-label">Cadence</span><span>Quarterly.</span>
+<span class="dd-label dd-label--note">Note</span><span class="dd-note">Holloway opened October 2025; early outcomes reflect a small population (between 20 and 42 people, depending on the measure) and should be read alongside occupancy, engagement, and pipeline indicators. Holloway quarters follow the City's contract year (Q1 = Oct–Dec 2025); the provider's fiscal-year report labels these same periods Q2–Q4.</span>
+<span class="dd-label dd-label--note">Note</span><span class="dd-note">Participant demographic profile reflects the City’s most recent demographic survey of the unhoused population in West Hollywood.</span>
+</div>
+</dd>
+<dt><span class="dt-bullet"></span>Prevention</dt>
+<dd>
+<div class="dd-grid">
+<span class="dd-label">Source</span><span>Contracted provider reports and internal City tracking of rental assistance disbursements and household counts.</span>
+<span class="dd-label">Period</span><span>Rental assistance 2018–Present; households supported 2017–Present; 2026 detail year-to-date through March 2026.</span>
+<span class="dd-label">Cadence</span><span>Quarterly, with annual reconciliation.</span>
+<span class="dd-label dd-label--note">Note</span><span class="dd-note">The 2021 spike reflects expanded COVID-19 emergency rental assistance and is not representative of typical volume.</span>
+</div>
+</dd>
+</dl>
+</div>
+</details>
+<details class="about-section about-section--metrics">
+<summary>
+<span class="about-num">03</span>
+<span class="about-titleblock">
+<span class="about-title">How to read each metric</span>
+<span class="about-hint">What different number types mean</span>
+</span>
+<span class="about-toggle"></span>
+</summary>
+<div class="about-body">
+<dl class="about-deflist about-deflist--compact">
+<dt><span class="dt-bullet"></span>People (unduplicated)</dt><dd>Distinct individuals during the period. The same person is counted once even if they received multiple services.</dd>
+<dt><span class="dt-bullet"></span>Admissions / placements</dt><dd>Program entries or housing placements. The same person can account for more than one admission across years if they re-enter.</dd>
+<dt><span class="dt-bullet"></span>Service requests</dt><dd>Incoming Concern Line requests. Multiple requests can refer to the same individual or location. Requests are not unique people.</dd>
+<dt><span class="dt-bullet"></span>Bed nights</dt><dd>One bed used for one night, summed across people and days. A 30-day stay produces 30 bed nights. Useful for capacity, not headcount.</dd>
+<dt><span class="dt-bullet"></span>Households</dt><dd>Distinct rental-assistance households. A household can include one or more people.</dd>
+<dt><span class="dt-bullet"></span>Observations</dt><dd>Unsheltered individuals observed during a field count. Useful for trend awareness; not a complete census.</dd>
+</dl>
+</div>
+</details>
+<details class="about-section about-section--glossary">
+<summary>
+<span class="about-num">04</span>
+<span class="about-titleblock">
+<span class="about-title">Glossary</span>
+<span class="about-hint">19 terms used across the dashboard</span>
+</span>
+<span class="about-toggle"></span>
+</summary>
+<div class="about-body">
+<dl class="about-deflist about-deflist--compact about-glossary">
+<dt><span class="dt-bullet"></span>Behavioral health response</dt><dd>Non-law-enforcement response focused on de-escalation, emotional support, and connection to care during a possible behavioral health crisis.</dd>
+<dt><span class="dt-bullet"></span>BIPOC</dt><dd>Black, Indigenous, and People of Color.</dd>
+<dt><span class="dt-bullet"></span>Case management</dt><dd>One-on-one support to access services, documents, benefits, housing, and follow-up care.</dd>
+<dt><span class="dt-bullet"></span>Chronic homelessness</dt><dd>An extended or repeated experience of homelessness, typically combined with a documented disability. A federal eligibility category for certain programs, including Holloway.</dd>
+<dt><span class="dt-bullet"></span>Coordinated Response Framework (CRF)</dt><dd>The City’s effort to clarify roles, improve coordination, align protocols, and connect data across providers.</dd>
+<dt><span class="dt-bullet"></span>Direct contacts</dt><dd>Situations where a response team was able to speak with or engage the person directly.</dd>
+<dt><span class="dt-bullet"></span>Exits</dt><dd>When someone leaves a program. Exits can go to permanent housing, another program, or another destination, including unknown.</dd>
+<dt><span class="dt-bullet"></span>Holloway</dt><dd>A 20-bed, non-congregate interim housing program in West Hollywood, opened October 2025, serving residents experiencing chronic homelessness and living with a disability.</dd>
+<dt><span class="dt-bullet"></span>Housing instability</dt><dd>A situation where a person or household may be at risk of losing housing or cannot maintain stable housing.</dd>
+<dt><span class="dt-bullet"></span>Interim housing</dt><dd>Short-term housing with support services while someone works toward a longer-term housing option.</dd>
+<dt><span class="dt-bullet"></span>Length of stay</dt><dd>The amount of time a person remains enrolled or housed in a program.</dd>
+<dt><span class="dt-bullet"></span>Median response time</dt><dd>The midpoint response time: half of responses were faster, half were slower.</dd>
+<dt><span class="dt-bullet"></span>MENA</dt><dd>Middle Eastern and North African — a demographic category used in race/ethnicity reporting to identify community members with origins in the Middle East or North Africa.</dd>
+<dt><span class="dt-bullet"></span>Non-congregate</dt><dd>A housing setting where people have private rooms or units rather than sleeping in a shared dorm-style space.</dd>
+<dt><span class="dt-bullet"></span>Permanent housing</dt><dd>Long-term housing intended to provide ongoing housing stability, including independent housing and permanent supportive housing.</dd>
+<dt><span class="dt-bullet"></span>Permanent housing navigation</dt><dd>Case management to help people complete paperwork, gather documents, and connect to long-term housing.</dd>
+<dt><span class="dt-bullet"></span>Point-in-Time (PIT) data</dt><dd>A snapshot count of people experiencing homelessness during a defined observation period. Useful for trend awareness; not a complete census.</dd>
+<dt><span class="dt-bullet"></span>Services accepted</dt><dd>The share of people reached directly who agreed to some form of help, referral, or service connection.</dd>
+<dt><span class="dt-bullet"></span>Arrears</dt><dd>Rent a household already owes to a landlord and has not yet paid.</dd>
+<dt><span class="dt-bullet"></span>Occupancy rate</dt><dd>The share of available bed nights that were filled during a period. Holloway's target is set at 90% to allow for turnover and intake review between stays.</dd>
+<dt><span class="dt-bullet"></span>Pending placement</dt><dd>A unit has been identified for a participant, but an inspection and/or funding approval must be completed before they can move in.</dd>
+<dt><span class="dt-bullet"></span>Unsheltered homelessness</dt><dd>Homelessness experienced outdoors, in vehicles, or in other places not meant for housing.</dd>
+<dt><span class="dt-bullet"></span>Voucher</dt><dd>A subsidized housing payment that covers part of a household's rent, issued by a housing authority. A unit rented with a voucher must pass an inspection before move-in.</dd>
+<dt><span class="dt-bullet"></span>Warm handoff</dt><dd>A referral made in person or with direct introduction between staff, rather than by giving someone a phone number to call on their own.</dd>
+</dl>
+</div>
+</details>
+<details class="about-section about-section--limits">
+<summary>
+<span class="about-num">05</span>
+<span class="about-titleblock">
+<span class="about-title">Known limitations</span>
+<span class="about-hint">Where the data is partial or evolving</span>
+</span>
+<span class="about-toggle"></span>
+</summary>
+<div class="about-body">
+<dl class="about-deflist about-deflist--compact">
+<dt><span class="dt-bullet"></span>Mixed time periods</dt><dd>Topline KPIs cover different periods (some 2016–Present, some recent). Periods are labeled on each card; numbers are not directly comparable across periods.</dd>
+<dt><span class="dt-bullet"></span>Small populations</dt><dd>Holloway serves up to 20 people at a time. Length-of-stay, exit-destination, and demographic figures are based on small numbers and will fluctuate as the program matures.</dd>
+<dt><span class="dt-bullet"></span>Evolving observation cadence</dt><dd>Monthly unsheltered counts ended September 2025 with the conclusion of the Ascencia contract. The City is now collecting quarterly PIT data; trend continuity will be evaluated as new data becomes available.</dd>
+<dt><span class="dt-bullet"></span>Partial-month and uneven logging</dt><dd>July 2025 Concern Line data covers Jul 16–31 only. Evening logging by the Care Team became consistent beginning in November 2025.</dd>
+<dt><span class="dt-bullet"></span>Long-term outcome tracking</dt><dd>Outside the Measure A program, local data does not yet track long-term housing retention for individual prevention households — an area for future evaluation.</dd>
+<dt><span class="dt-bullet"></span>Provider-reported figures</dt><dd>Program metrics on this dashboard — including occupancy, participation, response times, placements, and unduplicated client counts — are reported by contracted providers and reviewed by City staff. They are not independently audited by the City.</dd>
+<dt><span class="dt-bullet"></span>Why non-permanent exits are shorter</dt><dd>Non-permanent exits from Holloway average 54 days compared with 144 days for exits to permanent housing. Non-permanent exits happen for a wide range of reasons: some participants leave voluntarily because the structure or rules of the program do not work for them, some are asked to leave for non-compliance with program rules, and others move to another temporary setting or lose contact with the program. Because the reasons vary so widely, the average should not be read as a single pattern.</dd>
+<dt><span class="dt-bullet"></span>Fields not collected</dt><dd>Veteran status and disability are not collected in the outreach provider report used for the client demographics section, so they are not shown there.</dd>
+</dl>
+</div>
+</details>
+<details class="about-section about-section--refresh">
+<summary>
+<span class="about-num">06</span>
+<span class="about-titleblock">
+<span class="about-title">Refresh schedule</span>
+<span class="about-hint">When the dashboard updates</span>
+</span>
+<span class="about-toggle"></span>
+</summary>
+<div class="about-body">
+<p class="about-leadline">Most provider-reported metrics update <strong>quarterly</strong>.</p>
+<p>Service-related metrics are refreshed following the close of each quarter and review of contracted provider reports. Operational metrics — Concern Line activity and observation locations — are refreshed when each public release of the dashboard is prepared. Targeted updates may be made between releases when corrections are identified.</p>
+</div>
+</details>
+<details class="about-section about-section--contact">
+<summary>
+<span class="about-num">07</span>
+<span class="about-titleblock">
+<span class="about-title">Contact</span>
+<span class="about-hint">Questions, corrections, suggestions</span>
+</span>
+<span class="about-toggle"></span>
+</summary>
+<div class="about-body">
+<div class="contact-card">
+<div class="contact-name">Francisco Gomez</div>
+<div class="contact-role">Human Services Division · City of West Hollywood</div>
+<a class="contact-email" href="mailto:fgomez@weho.org">fgomez@weho.org</a>
+</div>
+<p class="about-leadline">Corrections, accessibility issues, and suggestions for additional metrics are welcomed and reviewed for future releases.</p>
+</div>
+</details>
+</div>
+</section>
+<div class="foot">
+<div>City of West Hollywood  ·  Human Services Division</div>
+<div>Last updated: <span id="dashboard-last-updated">—</span>· Individual sections may reflect different reporting periods depending on source availability.</div>
+</div>
+</div>
+<div aria-hidden="true" class="tooltip" id="tooltip"></div>
+
+<div aria-hidden="true" class="tooltip" id="chart-tooltip"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script src="data-service.js"></script><script src="dashboard.js"></script></body>
+</html>
