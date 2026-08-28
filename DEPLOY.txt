@@ -1,0 +1,15 @@
+FINAL CARTO BUILD
+
+Upload these runtime files to the ROOT of the GitHub Pages repository:
+- index.html
+- styles.css
+- dashboard.js
+- data-service.js
+- supabase-config.js
+
+The supabase/ folder is reference/setup only.
+
+This build restores CARTO Voyager basemaps on both map views using the provided basemap API key.
+No Supabase database changes are required.
+
+After uploading, commit and hard-refresh the live site.

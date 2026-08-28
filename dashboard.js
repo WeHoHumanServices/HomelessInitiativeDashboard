@@ -140,8 +140,10 @@ function activatePage(page) {
     waitForLeaflet(function() {
       if (!_pitMap) {
         _pitMap = L.map('pit-map').setView([34.0887, -118.3671], 14);
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; OpenStreetMap contributors', maxZoom: 19
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png?key=cb1_2huf_1_7e17e940efe96d547e2dc785', {
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attributions">CARTO</a>',
+          subdomains: 'abcd',
+          maxZoom: 20
         }).addTo(_pitMap);
       }
       pitLoadBoundary();
@@ -159,8 +161,10 @@ function activatePage(page) {
       if (!_hclMap) {
         _hclMap = L.map('hcl-heatmap', {zoomControl: true, scrollWheelZoom: false})
           .setView([34.0887, -118.3671], 14);
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; OpenStreetMap contributors', maxZoom: 19
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png?key=cb1_2huf_1_7e17e940efe96d547e2dc785', {
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attributions">CARTO</a>',
+          subdomains: 'abcd',
+          maxZoom: 20
         }).addTo(_hclMap);
         // WeHo boundary overlay
         (function() {
