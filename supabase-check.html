@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Supabase Dashboard Connection Check</title>
+<style>body{font-family:system-ui,-apple-system,Segoe UI,sans-serif;max-width:900px;margin:40px auto;padding:0 18px;color:#18314f}h1{color:#003087}.ok{color:#16794b}.bad{color:#b42318}.pending{color:#6b7280}code{background:#f3f6fa;padding:2px 5px;border-radius:4px}table{border-collapse:collapse;width:100%;margin-top:18px}th,td{text-align:left;padding:9px;border-bottom:1px solid #d8e3f0}pre{white-space:pre-wrap;background:#f6f8fb;padding:12px;border-radius:8px}</style>
+</head><body><h1>Supabase dashboard connection check</h1><p id="config">Checking configuration…</p><table><thead><tr><th>Table</th><th>Status</th><th>Rows returned</th></tr></thead><tbody id="results"></tbody></table><pre id="detail"></pre>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js?v=4"></script>
+<script>
+(async function(){
+ const cfg=window.DASHBOARD_CONFIG||{}, c=document.getElementById('config'), body=document.getElementById('results'), detail=document.getElementById('detail');
+ if(!window.supabase){c.innerHTML='<span class="bad">FAIL</span> Supabase JavaScript library did not load.';return;}
+ if(!cfg.supabaseUrl||cfg.supabaseUrl.includes('YOUR-PROJECT')){c.innerHTML='<span class="bad">FAIL</span> Project URL is still the placeholder.';return;}
+ if(!cfg.supabasePublishableKey||cfg.supabasePublishableKey.includes('REPLACE_ME')){c.innerHTML='<span class="bad">FAIL</span> Publishable key is still the placeholder.';return;}
+ let host=''; try{host=new URL(cfg.supabaseUrl).host}catch(e){c.innerHTML='<span class="bad">FAIL</span> Project URL is not a valid URL.';return;}
+ c.innerHTML='<span class="ok">Config found.</span> Testing <code>'+host+'</code> using the configured public key.';
+ const tables=['dashboard_pit_observations','dashboard_pit_counts','dashboard_hcl_monthly','dashboard_hcl_heat_points','dashboard_hcl_reason_outcomes','dashboard_program_series','dashboard_holloway','dashboard_metrics','dashboard_settings'];
+ const client=window.supabase.createClient(cfg.supabaseUrl,cfg.supabasePublishableKey);
+ let errors=[];
+ for(const t of tables){
+   const tr=document.createElement('tr'); tr.innerHTML='<td><code>'+t+'</code></td><td class="pending">Testing…</td><td>—</td>'; body.appendChild(tr);
+   try{
+     const r=await client.from(t).select('*',{count:'exact',head:true});
+     if(r.error) throw r.error;
+     tr.children[1].innerHTML='<span class="ok">OK</span>'; tr.children[2].textContent=r.count ?? 'accessible';
+   }catch(e){
+     const msg=e && e.message ? e.message : String(e); errors.push(t+': '+msg); tr.children[1].innerHTML='<span class="bad">FAIL</span>'; tr.children[2].textContent=msg;
+   }
+ }
+ detail.textContent=errors.length ? 'Errors:
+'+errors.join('
+') : 'All dashboard tables are reachable from the browser.';
+})();
+</script></body></html>
