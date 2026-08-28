@@ -51,6 +51,10 @@ function renderHolloway() {
   var qSel = document.getElementById('hw-quarter');
   if (!qSel) return;
   var d = HOLLOWAY_Q[qSel.value] || HOLLOWAY_Q.ytd;
+  // Live Holloway data arrives asynchronously from Supabase. On the first
+  // pass the data object is intentionally empty; do not abort the entire
+  // dashboard before navigation/event handlers are registered.
+  if (!d) return;
   function set(id, val) { var el = document.getElementById(id); if (el) { el.textContent = val; el.setAttribute('data-raw', val); } }
   function setText(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; }
   set('hw-served', d.served); setText('hw-served-sub', d.servedSub); setText('hw-served-label', d.servedLabel);
@@ -1093,6 +1097,8 @@ async function bootstrapDashboard() {
     HCL_REASON_OUTCOMES = live.hclReasonOutcomes;
     HOLLOWAY_Q = live.holloway;
     DATA = live.series;
+    // Re-render filter-managed Holloway values now that their live data exists.
+    renderHolloway();
     buildHclTimeMetadata();
     applyLiveMetrics(live.metrics || {});
 
