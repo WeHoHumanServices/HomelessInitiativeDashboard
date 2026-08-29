@@ -57,10 +57,24 @@
               <p id="dataset-desc" class="muted"></p>
             </div>
             <div class="head-actions">
-              <button id="template-btn" class="btn ghost" type="button">Download template</button>
+              <button id="guide-btn" class="btn ghost" type="button">Coding guide</button>
+              <button id="template-btn" class="btn ghost" type="button">Download guided template</button>
               <button id="current-btn" class="btn ghost" type="button">View current rows</button>
             </div>
           </div>
+
+          <section id="guide-section" class="guide-panel hidden" aria-label="Dataset coding guide">
+            <div class="section-line guide-heading">
+              <div>
+                <h3>How this dataset is coded</h3>
+                <p id="guide-use" class="muted small"></p>
+              </div>
+              <button id="close-guide" class="btn ghost" type="button">Close guide</button>
+            </div>
+            <div id="guide-notes" class="guide-notes"></div>
+            <div class="table-wrap guide-table-wrap"><table id="guide-table"></table></div>
+            <div id="guide-codes" class="guide-codes"></div>
+          </section>
 
           <div class="mode-tabs" role="tablist">
             <button class="mode-tab active" data-mode="upload" type="button">Upload file</button>

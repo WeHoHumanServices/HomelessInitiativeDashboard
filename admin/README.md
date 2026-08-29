@@ -11,7 +11,7 @@ A private browser-based admin tool for the Supabase-backed Homeless Initiative D
 - Previews data before any write.
 - Supports append, upsert, and period-replacement workflows where appropriate.
 - Includes manual entry for smaller tables such as metrics, settings, program series, and Holloway.
-- Generates dataset-specific CSV templates.
+- Generates guided Excel templates with **Data Entry**, **Coding Guide**, and **Code Lists** sheets (CSV fallback if Excel support is unavailable).
 - Records successful publishes in `dashboard_import_log`.
 
 ## Files
@@ -20,7 +20,7 @@ A private browser-based admin tool for the Supabase-backed Homeless Initiative D
 - `app.js` — authentication, parsing, validation, preview, and Supabase writes.
 - `config.js` — public Supabase project URL and publishable key only.
 - `admin_setup.sql` — one-time write-security and audit-log setup.
-- `templates/` — example CSV templates.
+- `templates/` — simple CSV examples retained as fallback/reference; the in-app **Download guided template** button is the preferred template source.
 
 ## One-time setup
 1. In Supabase, go to **Authentication → Users** and create the administrator user. Use a strong password. Do not enable public signup just for this tool.
@@ -64,3 +64,16 @@ The page loads SheetJS 0.20.3 from the official SheetJS CDN for Excel parsing. C
 
 ## Recommended first test
 Use **Settings** → Manual entry → `last_updated_label`, preview it, and publish an upsert. Then refresh the public dashboard and confirm the value changed before using bulk datasets.
+
+
+## Guided templates and coding help
+
+Version 2 adds dataset-specific coding guidance in two places:
+
+1. Click **Coding guide** in the Data Manager to see field definitions, accepted codes, array ordering, examples, and notes about how each field is used by the public dashboard.
+2. Click **Download guided template** to download an `.xlsx` workbook with three sheets:
+   - **Data Entry** — upload-ready headers plus an example row. This is the first worksheet, so the completed workbook can be uploaded directly back into the Data Manager.
+   - **Coding Guide** — field-by-field instructions and dashboard behavior.
+   - **Code Lists** — category/index mappings such as HCL reason codes, outcome order, time bins, metric keys, and Holloway period keys.
+
+Important dashboard-specific cautions are called out in the guide, including fields that update only a KPI while surrounding period text remains static in `index.html`.
