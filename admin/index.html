@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>West Hollywood Dashboard Data Manager</title>
+  <link rel="stylesheet" href="styles.css?v=1">
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand-wrap">
+      <div class="eyebrow">City of West Hollywood</div>
+      <h1>Dashboard Data Manager</h1>
+      <p>Validate, preview, and publish data to the Homeless Initiative Dashboard.</p>
+    </div>
+    <div class="top-actions">
+      <span id="user-pill" class="user-pill hidden"></span>
+      <a id="dashboard-link" class="btn ghost hidden" href="../" target="_blank" rel="noopener">View dashboard</a>
+      <button id="logout-btn" class="btn ghost hidden" type="button">Sign out</button>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section id="login-view" class="auth-card">
+      <div class="auth-icon">↗</div>
+      <div>
+        <div class="eyebrow blue">Private administration</div>
+        <h2>Sign in</h2>
+        <p class="muted">Use the Supabase Auth account authorized for dashboard updates.</p>
+      </div>
+      <form id="login-form" class="auth-form">
+        <label>Email<input id="email" type="email" autocomplete="username" required></label>
+        <label>Password<input id="password" type="password" autocomplete="current-password" required></label>
+        <button class="btn primary" type="submit">Sign in</button>
+      </form>
+      <div id="login-message" class="message hidden" role="status"></div>
+    </section>
+
+    <section id="app-view" class="hidden">
+      <div id="global-message" class="message hidden" role="status"></div>
+
+      <div class="workspace">
+        <aside class="sidebar">
+          <div class="sidebar-title">Datasets</div>
+          <nav id="dataset-nav" class="dataset-nav" aria-label="Dashboard datasets"></nav>
+          <div class="sidebar-foot">
+            <button id="history-btn" class="btn ghost full" type="button">Import history</button>
+          </div>
+        </aside>
+
+        <section class="content">
+          <div class="dataset-head">
+            <div>
+              <div id="dataset-group" class="eyebrow blue"></div>
+              <h2 id="dataset-title">Choose a dataset</h2>
+              <p id="dataset-desc" class="muted"></p>
+            </div>
+            <div class="head-actions">
+              <button id="template-btn" class="btn ghost" type="button">Download template</button>
+              <button id="current-btn" class="btn ghost" type="button">View current rows</button>
+            </div>
+          </div>
+
+          <div class="mode-tabs" role="tablist">
+            <button class="mode-tab active" data-mode="upload" type="button">Upload file</button>
+            <button class="mode-tab" data-mode="manual" type="button">Manual entry</button>
+          </div>
+
+          <section id="upload-panel" class="panel">
+            <div id="drop-zone" class="drop-zone" tabindex="0">
+              <div class="drop-icon">⇧</div>
+              <strong>Drop a CSV or Excel file here</strong>
+              <span>or click to choose a file</span>
+              <input id="file-input" type="file" accept=".csv,.xlsx,.xls" hidden>
+            </div>
+            <div id="file-meta" class="file-meta hidden"></div>
+
+            <div id="mapping-section" class="hidden">
+              <div class="section-line"><h3>Column mapping</h3><span id="mapping-status" class="status-chip"></span></div>
+              <p class="muted small">Columns are matched automatically. Adjust any field before validating.</p>
+              <div id="mapping-grid" class="mapping-grid"></div>
+              <div class="row-actions">
+                <button id="validate-btn" class="btn primary" type="button">Validate preview</button>
+                <button id="clear-file-btn" class="btn ghost" type="button">Clear file</button>
+              </div>
+            </div>
+          </section>
+
+          <section id="manual-panel" class="panel hidden">
+            <div class="section-line"><h3>Add or update a row</h3><span class="status-chip neutral">Validated before publish</span></div>
+            <form id="manual-form" class="manual-grid"></form>
+            <div class="row-actions">
+              <button id="manual-preview-btn" class="btn primary" type="button">Preview row</button>
+              <button id="manual-reset-btn" class="btn ghost" type="button">Reset</button>
+            </div>
+          </section>
+
+          <section id="preview-section" class="preview-section hidden">
+            <div class="section-line">
+              <div>
+                <h3>Preview & validation</h3>
+                <p id="preview-summary" class="muted small"></p>
+              </div>
+              <div id="validation-badges" class="badge-row"></div>
+            </div>
+            <div id="validation-list" class="validation-list"></div>
+            <div class="table-wrap"><table id="preview-table"></table></div>
+
+            <div class="publish-card">
+              <div>
+                <h3>Publish to Supabase</h3>
+                <p id="publish-help" class="muted small"></p>
+              </div>
+              <div class="publish-controls">
+                <label>Write mode<select id="write-mode"></select></label>
+                <label>Import note<input id="import-note" type="text" maxlength="250" placeholder="Optional note"></label>
+                <button id="publish-btn" class="btn primary" type="button">Publish data</button>
+              </div>
+            </div>
+          </section>
+
+          <section id="current-section" class="panel hidden">
+            <div class="section-line"><h3>Current Supabase rows</h3><button id="close-current" class="btn ghost" type="button">Close</button></div>
+            <p id="current-summary" class="muted small"></p>
+            <div class="table-wrap"><table id="current-table"></table></div>
+          </section>
+
+          <section id="history-section" class="panel hidden">
+            <div class="section-line"><h3>Import history</h3><button id="close-history" class="btn ghost" type="button">Close</button></div>
+            <div class="table-wrap"><table id="history-table"></table></div>
+          </section>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <div id="busy" class="busy hidden" aria-live="polite"><div class="spinner"></div><span id="busy-text">Working…</span></div>
+  <script src="config.js?v=1"></script>
+  <script src="app.js?v=1"></script>
+</body>
+</html>

@@ -1,0 +1,2 @@
+period_label,sort_order,total,days,reasons,outcomes,time_bins,day_of_week,is_public
+Aug 2026,14,250,31,"[120,35,40,30,10,10,5]","[120,45,35,50]","[55,60,70,60,5]","[30,35,40,35,45,35,30]",true
